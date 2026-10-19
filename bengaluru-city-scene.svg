@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1020" role="img" aria-labelledby="title desc">
+  <title id="title">Bengaluru at dusk</title>
+  <desc id="desc">A layered Garden City illustration with Vidhana Soudha, Cubbon Park trees, a Namma Metro train and a BMTC city bus.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#18273a"/><stop offset=".45" stop-color="#485a61"/><stop offset=".74" stop-color="#b17e67"/><stop offset="1" stop-color="#293f3d"/></linearGradient>
+    <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f0d19b"/><stop offset=".55" stop-color="#c59b71"/><stop offset="1" stop-color="#8f694f"/></linearGradient>
+    <linearGradient id="metro" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f3f0e8"/><stop offset="1" stop-color="#c8d2d0"/></linearGradient>
+    <linearGradient id="bus" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f17c50"/><stop offset=".53" stop-color="#ca4939"/><stop offset=".54" stop-color="#f4ead2"/><stop offset="1" stop-color="#c8bca5"/></linearGradient>
+    <linearGradient id="road" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#263e3a"/><stop offset=".45" stop-color="#453b76"/><stop offset="1" stop-color="#244753"/></linearGradient>
+    <radialGradient id="sun"><stop stop-color="#ffdda5" stop-opacity=".95"/><stop offset="1" stop-color="#f6a77c" stop-opacity="0"/></radialGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#080e13" flood-opacity=".46"/></filter>
+  </defs>
+  <rect width="900" height="1020" fill="url(#sky)"/>
+  <circle cx="657" cy="269" r="159" fill="url(#sun)"/>
+  <g fill="#f1e6d0" opacity=".8"><circle cx="112" cy="121" r="2"/><circle cx="216" cy="91" r="1.5"/><circle cx="307" cy="150" r="1.5"/><circle cx="733" cy="121" r="1.4"/><circle cx="799" cy="179" r="1.8"/></g>
+
+  <!-- Distant layered tree canopy: Garden City, not a generic skyline -->
+  <path d="M0 548c46-93 101-85 150-44 28-108 109-116 160-41 65-101 161-91 202-21 57-101 153-91 193-26 57-82 136-73 195 11v218H0Z" fill="#2a4a43"/>
+  <path d="M0 590c75-91 137-60 186-24 62-111 137-92 184-36 83-98 157-80 213-14 64-83 150-71 201-4 43-49 82-39 116-3v181H0Z" fill="#31594a" opacity=".9"/>
+  <g fill="#64866a" opacity=".85"><ellipse cx="102" cy="500" rx="107" ry="65"/><ellipse cx="289" cy="482" rx="101" ry="71"/><ellipse cx="518" cy="480" rx="126" ry="76"/><ellipse cx="767" cy="502" rx="118" ry="67"/></g>
+  <g fill="#d88491" opacity=".8"><circle cx="57" cy="451" r="9"/><circle cx="87" cy="467" r="8"/><circle cx="119" cy="445" r="10"/><circle cx="742" cy="449" r="8"/><circle cx="773" cy="468" r="9"/><circle cx="808" cy="441" r="10"/></g>
+
+  <!-- Vidhana Soudha: central dome, corner towers, columned façade and broad steps -->
+  <g filter="url(#shadow)">
+    <path d="M246 613h410v31H246Z" fill="#805f4a"/>
+    <path d="M271 544h360v74H271Z" fill="url(#stone)" stroke="#f0d3a3" stroke-width="2"/>
+    <path d="M289 543v-57l23-25 23 25v57m255 0v-57l23-25 23 25v57" fill="#c89f72" stroke="#f0d4a6" stroke-width="3"/>
+    <path d="M329 489h245v-35l-34-19H363l-34 19Z" fill="#d7b488" stroke="#f0d4a6" stroke-width="2"/>
+    <path d="M362 454q90-106 180 0Z" fill="url(#stone)" stroke="#f3d8a8" stroke-width="3"/>
+    <path d="M378 452q74-78 148 0Z" fill="#b7855f" opacity=".65"/>
+    <path d="M445 348v-22m-10 22h20" stroke="#f0d7aa" stroke-width="4"/>
+    <path d="M357 466v77m26-77v77m26-77v77m26-77v77m26-77v77m26-77v77m26-77v77m26-77v77" stroke="#f4d9ab" stroke-width="8"/>
+    <path d="M342 478h218" stroke="#8b644c" stroke-width="4" opacity=".7"/>
+    <path d="M264 617h374l-22 22H285Z" fill="#dfbd8f"/><path d="M286 639h333l-20 19H305Z" fill="#ba906b"/><path d="M309 658h287l-17 18H326Z" fill="#8e6c52"/>
+  </g>
+  <rect x="346" y="561" width="220" height="26" rx="13" fill="#213238" fill-opacity=".78" stroke="#dec59e" stroke-opacity=".5"/>
+  <text x="456" y="578" text-anchor="middle" fill="#f3e4c8" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="1.7">VIDHANA SOUDHA</text>
+
+  <!-- Curving elevated Namma Metro line and train -->
+  <path d="M0 408c171-43 333-41 492-9 141 28 269 30 408-10" fill="none" stroke="#24343a" stroke-width="28" opacity=".9"/>
+  <path d="M0 395c171-42 333-40 492-8 141 28 269 30 408-10" fill="none" stroke="#a48bb9" stroke-width="4"/>
+  <path d="M0 406c171-42 333-40 492-8 141 28 269 30 408-10" fill="none" stroke="#53666b" stroke-width="3"/>
+  <path d="M102 411v73m338-68v67m319-41v50" stroke="#39474a" stroke-width="11" opacity=".92"/>
+  <g filter="url(#shadow)">
+    <path d="M286 353q0-24 24-24h206q25 0 25 25v52q-127-29-255-8Z" fill="url(#metro)" stroke="#f8f4e8" stroke-width="3"/>
+    <path d="M286 372q126-19 255 8v13q-128-27-255-6Z" fill="#6e4b9c"/>
+    <path d="M300 339h43v29h-43Zm50 0h43v29h-43Zm50 0h43v29h-43Zm50 0h42v29h-42Z" fill="#233a47" stroke="#9ec5c7" stroke-width="2"/>
+    <text x="307" y="389" fill="#f4effa" font-family="Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1">NAMMA METRO</text>
+    <circle cx="332" cy="406" r="9" fill="#141b20" stroke="#a4b5b1" stroke-width="3"/><circle cx="491" cy="406" r="9" fill="#141b20" stroke="#a4b5b1" stroke-width="3"/>
+  </g>
+
+  <!-- Foreground park edge and organic tree trunks -->
+  <path d="M0 704c156-60 297-31 420 9 158 51 321 12 480-37v344H0Z" fill="#24473c"/>
+  <path d="M0 758c191-57 304-13 438 27 144 43 311 21 462-22v257H0Z" fill="#183b35"/>
+  <g fill="none" stroke="#795c43" stroke-linecap="round">
+    <path d="M83 830V580m0 107-43-51m43 24 48-63m-48 117 59-40" stroke-width="18"/>
+    <path d="M806 845V576m0 125-48-55m48 23 41-68m-41 119-63-44" stroke-width="19"/>
+  </g>
+  <g fill="#3d6a50" stroke="#83a271" stroke-width="2"><ellipse cx="83" cy="559" rx="108" ry="64"/><ellipse cx="811" cy="556" rx="112" ry="69"/></g>
+  <g fill="#e4a0a2"><circle cx="42" cy="538" r="7"/><circle cx="91" cy="522" r="8"/><circle cx="135" cy="565" r="7"/><circle cx="777" cy="537" r="8"/><circle cx="828" cy="521" r="7"/><circle cx="862" cy="566" r="8"/></g>
+
+  <!-- Bengaluru road with luminous route line and BMTC bus -->
+  <path d="M0 842c175-59 324-54 468-7 150 48 287 50 432-7v192H0Z" fill="url(#road)"/>
+  <path d="M0 851c177-56 319-48 462 0 151 50 286 49 438-7" fill="none" stroke="#d4c7b2" stroke-width="3" stroke-dasharray="22 20" opacity=".8"/>
+  <path d="M67 858c153-47 252-39 367 2" fill="none" stroke="#b87ff2" stroke-width="5" opacity=".42" filter="url(#soft)"/>
+  <g filter="url(#shadow)">
+    <path d="M454 735q0-22 23-22h220q31 0 31 29v112H454Z" fill="url(#bus)" stroke="#f7e9d0" stroke-width="3"/>
+    <path d="M468 728h48v48h-48Zm56 0h50v48h-50Zm58 0h51v48h-51Zm59 0h69v48h-69Z" fill="#284350" stroke="#a8c3bd" stroke-width="2"/>
+    <path d="M454 782h274" stroke="#f8ead2" stroke-width="6"/>
+    <rect x="485" y="790" width="180" height="22" rx="4" fill="#f6ecd8"/><text x="575" y="805" text-anchor="middle" fill="#713d33" font-family="Arial,sans-serif" font-size="10" font-weight="900" letter-spacing="1.2">BMTC  ·  MAJESTIC</text>
+    <path d="M454 823h274" stroke="#9f493b" stroke-width="3"/>
+    <circle cx="500" cy="848" r="16" fill="#10171b" stroke="#aebdb8" stroke-width="4"/><circle cx="680" cy="848" r="16" fill="#10171b" stroke="#aebdb8" stroke-width="4"/>
+    <circle cx="500" cy="848" r="5" fill="#d9d7c9"/><circle cx="680" cy="848" r="5" fill="#d9d7c9"/>
+  </g>
+  <ellipse cx="590" cy="883" rx="250" ry="36" fill="#8d62d0" opacity=".17" filter="url(#soft)"/>
+
+  <!-- location markers -->
+  <g filter="url(#shadow)"><rect x="50" y="922" width="286" height="51" rx="25" fill="#192a30" stroke="#668373"/><circle cx="77" cy="948" r="6" fill="#95dda8"/><text x="95" y="952" fill="#e4eee3" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing=".6">CUBBON PARK · GARDEN CITY</text></g>
+  <g filter="url(#shadow)"><rect x="531" y="922" width="319" height="51" rx="25" fill="#192a30" stroke="#637781"/><circle cx="558" cy="948" r="6" fill="#c7a0e8"/><text x="576" y="952" fill="#e4eee3" font-family="Arial,sans-serif" font-size="11" font-weight="700" letter-spacing=".6">NAMMA METRO  +  BMTC</text></g>
+</svg>
