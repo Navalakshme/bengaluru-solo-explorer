@@ -192,6 +192,103 @@ a { color: inherit; }
 .footer-city { margin-left: auto; color: #9cac9f; font: 700 8px var(--body); letter-spacing: 1px; }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
+/* Comfortable reading sizes and a crisp, consistent sans-serif across devices. */
+:root { --display: "Manrope", sans-serif; --body: "Manrope", sans-serif; }
+body { font-size: 16px; }
+.brand { font-family: var(--body); }
+.nav-links a { font-size: 14px; }
+.city-pill { font-size: 11px; }
+.eyebrow, .section-kicker { font-size: 11px; }
+.intro-copy h1 { font-family: var(--display); font-size: clamp(48px, 5vw, 72px); font-weight: 800; line-height: 1.06; letter-spacing: -2px; }
+.intro-copy h1 em { font-weight: 800; }
+.intro-deck { font-size: 16px; }
+.local-proof { font-size: 10px; }
+.planner-head h2, .results-topline h2, .how-heading h2 { font-family: var(--display); font-weight: 750; }
+.planner-head h2 { font-size: 26px; }
+.ai-label { font-size: 9px; }
+.request-label { font-size: 14px; }
+.request-box textarea { font-size: 16px; }
+.request-hint { font-size: 9px; }
+.vibe-label { font-size: 12px; }
+.vibe-chip { min-height: 40px; padding: 8px 12px; font-size: 12px; }
+.quick-label-row .section-kicker { font-size: 10px; }
+.optional-label { font-size: 10px; }
+.mode-chip { min-height: 40px; padding: 9px 12px; font-size: 13px; }
+.field-label { font-size: 13px; }
+.field-label span { font-size: 9px; }
+.field-label-row output { font-size: 14px; }
+.input-with-icon { height: 42px; }
+.input-with-icon input, .select-wrap select { font-size: 15px; }
+.select-wrap select { height: 42px; }
+.field-help { font-size: 11px; }
+.range-captions { font-size: 10px; }
+.taste-details summary { font-size: 13px; }
+.taste-optional { font-size: 9px; }
+.taste-content input { height: 42px; font-size: 15px; }
+.taste-content p { font-size: 11px; }
+.privacy-note { font-size: 11px; }
+.plan-button { font-size: 14px; }
+.form-status { font-size: 12px; }
+.results-topline h2 { font-size: 32px; }
+.result-mode-pill { font-size: 10px; }
+.preview-banner p { font-size: 13px; }
+.results-summary { font-size: 15px; }
+.stop-time { font-size: 12px; }
+.stop-category { font-size: 10px; }
+.stop-card h3 { font-size: 19px; }
+.stop-address { font-size: 13px; }
+.stop-reason { font-size: 14px; }
+.qloo-fit { font-size: 13px; }
+.cost-tag, .transit-tag, .good-to-know-tag { font-size: 11px; }
+.stop-links a { font-size: 12px; }
+.budget-note { font-size: 14px; }
+.refine-copy strong { font-size: 14px; }
+.refine-copy span { font-size: 12px; }
+.refine-form input { height: 44px; font-size: 14px; }
+.sources-row { font-size: 10px; }
+.sources-row a { font-size: 12px; }
+.comfort-note { font-size: 12px; }
+.how-heading h2 { font-size: 38px; }
+.how-number { font-size: 11px; }
+.how-grid h3 { font-size: 17px; }
+.how-grid p { font-size: 14px; }
+.footer { font-size: 11px; }
+.footer-city { font-size: 10px; }
+
+@media (max-width: 760px) {
+  .planner-head h2 { font-size: 25px; }
+  .mode-chip { font-size: 13px; }
+}
+@media (max-width: 600px) {
+  .city-pill { font-size: 10px; }
+  .intro-copy h1 { font-size: clamp(40px, 11vw, 52px); letter-spacing: -1.2px; }
+  .intro-deck { font-size: 15px; }
+  .local-proof { font-size: 10px; }
+  .planner { padding: 20px 16px 16px; }
+  .planner-head h2 { font-size: 23px; }
+  .request-label { font-size: 13px; }
+  .request-box textarea { font-size: 15px; }
+  .vibe-chip { min-height: 42px; font-size: 12px; }
+  .quick-label-row .section-kicker { font-size: 10px; }
+  .optional-label { font-size: 10px; }
+  .mode-chip { min-height: 42px; font-size: 12px; }
+  .field-label { font-size: 12px; }
+  .field-label span { font-size: 8px; }
+  .field-help { font-size: 10px; }
+  .input-with-icon input, .select-wrap select { font-size: 14px; }
+  .taste-details summary { font-size: 12px; }
+  .taste-optional { font-size: 8px; }
+  .plan-button { min-height: 48px; font-size: 14px; }
+  .privacy-note { font-size: 11px; }
+  .results-topline h2 { font-size: 27px; }
+  .results-summary { font-size: 14px; }
+  .stop-card h3 { font-size: 18px; }
+  .how-heading h2 { font-size: 31px; }
+  .how-grid h3 { font-size: 16px; }
+  .how-grid p { font-size: 14px; }
+  .footer-city { font-size: 9px; }
+}
+
 @media (max-width: 1150px) {
   .hero-grid { gap: 24px; }
   .planner { padding: 21px 19px 17px; }
@@ -280,6 +377,42 @@ a { color: inherit; }
   .footer { min-height: 68px; gap: 12px; flex-wrap: wrap; }
   .footer > span:nth-child(2) { display: none; }
   .footer-city { font-size: 7px; }
+}
+@media (max-width: 1150px) {
+  .mode-chip { font-size: 13px; }
+  .vibe-chip { font-size: 12px; }
+}
+@media (max-width: 600px) {
+  .city-pill { font-size: 10px; }
+  .intro-copy h1 { font-size: clamp(40px, 11vw, 52px); font-weight: 800; letter-spacing: -1.2px; }
+  .intro-deck { font-size: 15px; }
+  .local-proof { font-size: 10px; }
+  .planner { padding: 20px 16px 16px; }
+  .planner-head h2 { font-size: 23px; }
+  .request-label { font-size: 13px; }
+  .request-box textarea { font-size: 15px; }
+  .vibe-chip { min-height: 42px; font-size: 12px; }
+  .quick-label-row .section-kicker { font-size: 10px; }
+  .optional-label { font-size: 10px; }
+  .mode-chip { min-height: 42px; font-size: 12px; }
+  .field-label { font-size: 12px; }
+  .field-label span { font-size: 8px; }
+  .field-help { font-size: 10px; }
+  .input-with-icon input, .select-wrap select { font-size: 14px; }
+  .taste-details summary { font-size: 12px; }
+  .taste-optional { font-size: 8px; }
+  .plan-button { min-height: 48px; font-size: 14px; }
+  .privacy-note { font-size: 11px; }
+  .results-topline h2 { font-size: 27px; }
+  .results-summary { font-size: 14px; }
+  .stop-card h3 { font-size: 18px; }
+  .stop-address { font-size: 13px; }
+  .stop-reason, .budget-note { font-size: 14px; }
+  .qloo-fit { font-size: 13px; }
+  .how-heading h2 { font-size: 31px; }
+  .how-grid h3 { font-size: 16px; }
+  .how-grid p { font-size: 14px; }
+  .footer-city { font-size: 9px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
