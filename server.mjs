@@ -144,9 +144,12 @@ const server = http.createServer(async (req, res) => {
     try { return await handlePlan(req, res); }
     catch (error) { return json(res, 400, { error: error.message || 'Invalid request.' }); }
   }
-  const requested = url.pathname === '/' ? '/index.html' : decodeURIComponent(url.pathname);
-  const file = path.resolve(ROOT, `public${requested}`);
-  if (!file.startsWith(path.join(ROOT, 'public') + path.sep)) { res.writeHead(403); return res.end('Forbidden'); }
+  let requested;
+  try { requested = decodeURIComponent(url.pathname); }
+  catch { res.writeHead(400); return res.end('Bad request'); }
+  const filename = requested === '/' ? 'index.html' : requested.slice(1);
+  if (!['index.html', 'styles.css', 'app.js'].includes(filename)) { res.writeHead(404); return res.end('Not found'); }
+  const file = path.join(ROOT, filename);
   try {
     const content = await readFile(file);
     res.writeHead(200, { 'Content-Type': MIME[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });

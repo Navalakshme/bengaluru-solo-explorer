@@ -16,9 +16,13 @@ The app can also be explored in demo mode without API keys. Demo mode is clearly
 
 Keep both keys on the server. Never put them in browser code or commit `.env` to the repository.
 
+## Deploy on Vercel
+
+Import this repository as a project in Vercel. Add `QLOO_API_KEY` and `GEMINI_API_KEY` as encrypted environment variables for Production (and Preview if you want preview builds to use live recommendations), then redeploy. The keys are read only by the serverless API routes.
+
 ## Stack
 
-Node.js built-in HTTP server and browser-native HTML, CSS, and JavaScript. The Qloo integration uses the Insights API (`urn:entity:place`) with a Bengaluru locality signal, optional resolved favorite entities, explainability metadata, and a lower-popularity filter for explicit hidden-gem requests. Gemini uses Google Search and Google Maps grounding so current place information and routes can be linked to their sources.
+Node.js built-in HTTP server for local development and browser-native HTML, CSS, and JavaScript. Vercel serves the static app and the `api/` serverless functions. The Qloo integration uses the Insights API (`urn:entity:place`) with a Bengaluru locality signal, optional resolved favorite entities, explainability metadata, and a lower-popularity filter for explicit hidden-gem requests. Gemini uses Google Search and Google Maps grounding so current place information and routes can be linked to their sources.
 
 ## Project status
 
