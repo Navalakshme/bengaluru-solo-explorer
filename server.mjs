@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { qlooPlaces } from './lib/qloo.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 loadEnv(path.join(ROOT, '.env'));
@@ -42,32 +43,6 @@ async function readBody(req) {
     if (raw.length > 64_000) throw new Error('Request is too large.');
   }
   return JSON.parse(raw || '{}');
-}
-
-async function qlooPlaces(input) {
-  const currentPoint = input.startArea === 'My current location' && input.coordinates
-    ? `POINT(${input.coordinates.longitude} ${input.coordinates.latitude})`
-    : null;
-  const body = {
-    'filter.type': 'urn:entity:place',
-    ...(currentPoint ? { 'filter.location': currentPoint, 'signal.location': currentPoint } : { 'filter.location.query': input.startArea || 'Bengaluru', 'signal.location.query': input.startArea || 'Bengaluru' }),
-    take: 30,
-    'feature.explainability': true
-  };
-  const requestText = `${input.mood || ''} ${input.refinement || ''}`.toLowerCase();
-  if (/hidden|lesser[- ]known|local gem|offbeat|under.?the.?radar/.test(requestText)) body['filter.popularity.max'] = 0.85;
-  const interests = (input.favorites || []).map(name => name.trim()).filter(Boolean).slice(0, 8);
-  if (interests.length) body['signal.interests.entities.query'] = interests.map(name => ({ name, resolve_to: 'both' }));
-
-  const response = await fetch('https://api.qloo.com/v2/insights', {
-    method: 'POST',
-    headers: { 'X-Api-Key': process.env.QLOO_API_KEY, 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(20_000)
-  });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.message || payload.error || `Qloo returned ${response.status}.`);
-  return payload;
 }
 
 function geminiPrompt(input, qlooPayload) {
