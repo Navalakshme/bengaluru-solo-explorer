@@ -105,7 +105,8 @@ async function createPlan(refinement = '') {
     } else if (payload.missingKeys) {
       const sample = demoPlans[mode];
       const updatedSample = { ...sample, summary: input.mood ? `For “${input.mood}” — ${sample.summary}` : sample.summary };
-      statusLine.textContent = 'Live Qloo and Gemini keys are needed for real recommendations.';
+      const missingProviders = payload.missingKeys.map(key => key === 'QLOO_API_KEY' ? 'Qloo' : 'Gemini');
+      statusLine.textContent = `Add the ${missingProviders.join(' and ')} API key${missingProviders.length > 1 ? 's' : ''} in Vercel to enable live recommendations.`;
       renderPlan({ plan: updatedSample, sources: [] }, true);
     } else {
       statusLine.textContent = payload.error || 'Could not make a plan. Try again.';
