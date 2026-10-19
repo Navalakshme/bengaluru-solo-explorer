@@ -230,8 +230,8 @@ a { color: inherit; }
   .city-pill-chevron { display: none; }
   .hero-grid { gap: 15px; padding: 29px 0 17px; }
   .intro-copy h1 { margin: 15px 0 12px; font-size: clamp(42px, 12vw, 57px); letter-spacing: -1px; }
-  .intro-deck { font-size: 11px; line-height: 1.65; }
-  .local-proof { margin-top: 13px; font-size: 7px; }
+  .intro-deck { font-size: 12px; line-height: 1.65; }
+  .local-proof { margin-top: 13px; font-size: 8px; }
   .city-scene { height: 235px; border-radius: 20px; }
   .city-scene img { object-position: center 51%; }
   .city-scene figcaption { left: 10px; bottom: 10px; gap: 6px; padding: 8px 10px; font-size: 6px; letter-spacing: .6px; }
@@ -239,33 +239,35 @@ a { color: inherit; }
   .scene-icon { width: 23px; height: 23px; font-size: 12px; }
   .scene-floating-note strong { font-size: 8px; }
   .scene-floating-note small { font-size: 6px; }
-  .planner { padding: 20px 16px 15px; border-radius: 17px; }
+  .planner { padding: 20px 16px 16px; border-radius: 17px; }
   .planner-head { align-items: flex-start; margin-bottom: 17px; }
-  .planner-head h2 { font-size: 20px; }
+  .planner-head h2 { font-size: 21px; }
   .ai-stack { gap: 4px; padding-top: 3px; }
   .qloo-mark, .gemini-mark { width: 17px; height: 17px; font-size: 9px; }
   .ai-label { display: none; }
-  .request-label { font-size: 9px; }
+  .request-label { font-size: 10px; }
   .request-box { gap: 8px; padding: 11px; }
-  .request-box textarea { min-height: 46px; padding-right: 0; font-size: 11px; }
+  .request-box textarea { min-height: 54px; padding-right: 0; font-size: 13px; }
   .request-hint { display: none; }
   .vibe-row { flex-wrap: nowrap; margin-right: -4px; padding: 2px 3px 7px 0; overflow-x: auto; scrollbar-width: none; }
   .vibe-row::-webkit-scrollbar { display: none; }
   .vibe-label { display: none; }
-  .vibe-chip { flex: none; padding: 8px 11px; }
+  .vibe-chip { flex: none; min-height: 38px; padding: 8px 12px; font-size: 9px; }
   .quick-label-row { align-items: flex-start; margin-top: 14px; }
-  .quick-label-row .section-kicker { font-size: 7px; }
-  .optional-label { max-width: 120px; text-align: right; font-size: 7px; }
+  .quick-label-row .section-kicker { font-size: 8px; }
+  .optional-label { max-width: 120px; text-align: right; font-size: 8px; }
   .mode-chips { flex-wrap: nowrap; margin-right: -4px; padding: 1px 3px 7px 0; overflow-x: auto; scrollbar-width: none; }
   .mode-chips::-webkit-scrollbar { display: none; }
-  .mode-chip { flex: none; min-height: 33px; padding: 8px 11px; border-radius: 999px; font-size: 8px; }
-  .form-grid { gap: 15px 12px; margin-top: 12px; padding-top: 15px; }
-  .field-label { font-size: 8px; }
-  .field-label span { font-size: 5px; }
-  .field-help { font-size: 7px; }
-  .input-with-icon input, .select-wrap select { font-size: 9px; }
-  .select-wrap select { padding-right: 17px; }
-  .select-chevron { font-size: 12px; }
+  .mode-chip { flex: none; min-height: 40px; padding: 9px 12px; border-radius: 999px; font-size: 9px; }
+  .form-grid { gap: 18px 12px; margin-top: 14px; padding-top: 16px; }
+  .field-label { font-size: 10px; }
+  .field-label span { font-size: 6px; }
+  .field-label-row output { font-size: 12px; }
+  .field-help { font-size: 8px; }
+  .input-with-icon { height: 42px; margin-top: 5px; }
+  .input-with-icon input, .select-wrap select { font-size: 12px; }
+  .select-wrap select { height: 42px; padding-right: 18px; }
+  .select-chevron { top: 9px; font-size: 13px; }
   .taste-details { margin-top: 13px; padding-top: 11px; }
   .taste-details summary { font-size: 8px; }
   .taste-optional { font-size: 6px; }
