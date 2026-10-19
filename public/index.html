@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f5ef">
+  <meta name="description" content="A Bengaluru day out, shaped around your taste.">
+  <title>Elsewhere — Bengaluru, your way</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Elsewhere home"><span class="brand-glyph" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 3.5 20 12l8.5 4-8.5 4-4 8.5L12 20l-8.5-4L12 12l4-8.5Z"/><circle cx="16" cy="16" r="2.3"/></svg></span><span>elsewhere<span class="brand-period">.</span></span></a>
+      <nav class="nav-links" aria-label="Main navigation"><a href="#how">How it works</a><a href="#about">Why Elsewhere</a></nav>
+      <div class="city-pill"><span class="live-dot"></span><span>BENGALURU, INDIA</span><span class="city-pill-chevron">⌄</span></div>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <div class="intro-copy">
+          <div class="eyebrow"><span class="eyebrow-mark">✳</span> A city, in your own rhythm</div>
+          <h1>Go where<br>your day <em>takes you.</em></h1>
+          <p class="intro-deck">A little taste, a little curiosity, and a city full of possibilities. Tell us what you're in the mood for.</p>
+        </div>
+        <div class="intro-side-note"><span class="side-note-line"></span><span>MADE FOR<br>WANDERING<br><i>SOLO.</i></span></div>
+      </section>
+
+      <section class="planner" aria-labelledby="planner-title">
+        <div class="planner-head"><div><span class="section-kicker">YOUR DAY, YOUR CALL</span><h2 id="planner-title">What sounds good?</h2></div><div class="ai-stack" aria-label="Powered by Qloo and Gemini"><span class="qloo-mark">Q</span><span class="plus">+</span><span class="gemini-mark">✦</span><span class="ai-label">QLOO <b>×</b> GEMINI</span></div></div>
+
+        <form id="plan-form">
+          <label class="request-label" for="request">Describe the feeling, the plan, or just a starting thought</label>
+          <div class="request-box"><span class="request-sparkle" aria-hidden="true">✳</span><textarea id="request" rows="2" placeholder="A slow afternoon, good coffee, maybe somewhere creative…" aria-label="Describe the day you want"></textarea><span class="request-hint">AI GETS THE VIBE</span></div>
+
+          <div class="quick-label-row"><span class="section-kicker">OR START WITH A PLAN</span><span class="optional-label">Pick one or mix a few</span></div>
+          <div class="mode-chips" role="group" aria-label="Choose an exploration style">
+            <button class="mode-chip selected" type="button" data-mode="day"><span class="chip-icon">◷</span> Full day</button>
+            <button class="mode-chip" type="button" data-mode="food"><span class="chip-icon">⌁</span> Food & coffee</button>
+            <button class="mode-chip" type="button" data-mode="sights"><span class="chip-icon">⌖</span> Places to see</button>
+            <button class="mode-chip" type="button" data-mode="adventure"><span class="chip-icon">↗</span> Adventure</button>
+          </div>
+
+          <div class="form-grid">
+            <div class="field-group location-field">
+              <label class="field-label" for="start-area">Starting point <span>OPTIONAL</span></label>
+              <div class="input-with-icon"><span class="field-icon">⌖</span><input id="start-area" name="startArea" value="Bengaluru" placeholder="Neighborhood or landmark"><button type="button" id="use-location" class="location-button" aria-label="Use my current location" title="Use my current location"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.1"/><circle cx="10" cy="10" r="1.8"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2m13 0h2"/></svg></button></div>
+              <span id="location-status" class="field-help">Type an area or share your location</span>
+            </div>
+            <div class="field-group budget-field">
+              <div class="field-label-row"><label class="field-label" for="budget">Budget <span>PER PERSON</span></label><output id="budget-value" for="budget">₹1,500</output></div>
+              <input id="budget" class="range-input" type="range" min="300" max="5000" step="100" value="1500">
+              <div class="range-captions"><span>₹300</span><span>₹5,000+</span></div>
+            </div>
+            <div class="field-group time-field">
+              <label class="field-label" for="duration">Time you have</label>
+              <div class="select-wrap"><select id="duration" name="duration"><option value="2">A couple of hours</option><option value="4">Half a day</option><option value="8" selected>Most of the day</option><option value="12">The whole day</option></select><span class="select-chevron">⌄</span></div>
+            </div>
+            <div class="field-group travel-field">
+              <label class="field-label" for="transport">Getting around</label>
+              <div class="select-wrap"><select id="transport" name="transport"><option value="any">Whatever works</option><option value="public">Metro & public transit</option><option value="auto">Auto-rickshaw</option><option value="cab">Cab</option><option value="walk">Walking</option></select><span class="select-chevron">⌄</span></div>
+            </div>
+          </div>
+
+          <details class="taste-details"><summary><span class="taste-symbol">✦</span><span>Give it a little more to go on</span><span class="taste-optional">OPTIONAL TASTE SEEDS</span><span class="summary-chevron">⌄</span></summary><div class="taste-content"><label class="field-label" for="favorites">Things you already love <span>FOOD, ARTISTS, FILMS, PLACES</span></label><input id="favorites" placeholder="e.g. filter coffee, indie music, Cubbon Park"><p>Qloo can use these as cultural signals. Leave blank and explore from your mood alone.</p></div></details>
+
+          <div class="submit-row"><div class="privacy-note"><span class="lock-icon">⌑</span> Your location is only used to shape this plan.</div><button class="plan-button" id="plan-button" type="submit"><span class="button-star">✳</span><span>Find my kind of day</span><span class="button-arrow">↗</span></button></div>
+          <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+        </form>
+      </section>
+
+      <section class="results-section" id="results" hidden aria-live="polite">
+        <div class="results-topline"><div><span class="section-kicker">YOUR BENGALURU, CURATED</span><h2 id="results-title">A day that feels like yours.</h2></div><span class="result-mode-pill" id="result-mode-pill">FULL DAY</span></div>
+        <div id="preview-banner" class="preview-banner" hidden><span>✦</span><p><strong>Concept preview</strong> — sample places to show the experience. Connect Qloo and Gemini keys for live taste matches and current, sourced details.</p></div>
+        <p id="results-summary" class="results-summary"></p>
+        <div id="itinerary" class="itinerary"></div>
+        <div class="sources-row" id="sources-row" hidden><span>GOOGLE MAPS & WEB SOURCES</span><div id="sources-list"></div></div>
+        <div id="budget-note" class="budget-note" hidden></div>
+        <div class="refine-card"><div class="refine-icon">↻</div><div class="refine-copy"><strong>Want to shape it a little?</strong><span>Tell the agent what to change. It’ll rethink the plan with you.</span></div><form id="refine-form" class="refine-form"><label class="visually-hidden" for="refine-input">Refine the plan</label><input id="refine-input" placeholder="Closer, less busy, more adventurous…"><button type="submit" aria-label="Update plan">↗</button></form></div>
+        <p class="comfort-note"><span>✳</span> Practical details and route suggestions are sourced where available. Always check live hours and routes before you go; no place or journey can be guaranteed safe.</p>
+      </section>
+
+      <section id="how" class="how-section"><div class="how-heading"><span class="section-kicker">NOT JUST ANOTHER TOP 10 LIST</span><h2>Taste makes it <em>yours.</em></h2></div><div class="how-grid"><article><span class="how-number">01</span><h3>Tell it your vibe</h3><p>Pick a starting plan or describe the kind of day you need. Add a budget, time, and favorite things—or keep it open.</p></article><article><span class="how-number">02</span><h3>Find your kind of place</h3><p>Qloo connects your cultural tastes to Bengaluru places. Gemini searches current local details and explains the fit.</p></article><article><span class="how-number">03</span><h3>Make it a day</h3><p>Get an ordered plan, sources, and map routes. Ask for a quieter, closer, cheaper, or entirely different version.</p></article></div></section>
+
+      <footer id="about" class="footer"><a class="brand footer-brand" href="#top"><span class="brand-glyph" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 3.5 20 12l8.5 4-8.5 4-4 8.5L12 20l-8.5-4L12 12l4-8.5Z"/><circle cx="16" cy="16" r="2.3"/></svg></span><span>elsewhere<span class="brand-period">.</span></span></a><span>Find a little more of what you love.</span><span class="footer-city">BENGALURU · INDIA</span></footer>
+    </main>
+  </div>
+</body>
+</html>
