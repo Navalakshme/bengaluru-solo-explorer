@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { qlooPlaces } from './lib/qloo.js';
+import { createPlan } from './lib/planner.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 loadEnv(path.join(ROOT, '.env'));
@@ -45,75 +45,15 @@ async function readBody(req) {
   return JSON.parse(raw || '{}');
 }
 
-function geminiPrompt(input, qlooPayload) {
-  const candidates = qlooPayload?.results?.entities || qlooPayload?.entities || [];
-  const places = candidates.map((place, index) => ({
-    name: place.name,
-    type: place.type,
-    address: place.properties?.address,
-    city: place.properties?.geocode?.city,
-    category: place.tags?.map(tag => tag.name).filter(Boolean).slice(0, 6),
-    affinity: place.affinity,
-    popularity: place.popularity,
-    qlooExplainability: place.query?.explainability,
-    website: place.properties?.website,
-    index
-  }));
-  return `You are the planning agent for Elsewhere, a Bengaluru discovery product for locals and visitors planning outings alone or with others. Create a useful, grounded recommendation using Qloo place recommendations as the cultural-fit shortlist and current Google Search results for practical facts. Make the city's identity specific when useful: Bengaluru neighborhoods, gardens, Vidhana Soudha, Namma Metro, BMTC and local food culture. Never invent opening hours, costs, current availability, safety claims, travel times, or a Qloo affinity score. If information is unclear, say so and link to a source or Google Maps. Adapt suggestions and practical notes to the requested company (${input.groupType || 'not specified'}) without assuming every outing is solo. Prefer a varied route with realistic buffers and no more than 4 stops for a day plan. Use the user’s budget in INR as a total target, and label any cost as an estimate.
-
-Return only valid JSON with this shape: {"title":string,"summary":string,"dayPlan":boolean,"items":[{"name":string,"category":string,"time":string,"address":string,"estimatedCostINR":number|null,"reason":string,"qlooFit":string,"goodToKnow":string,"gettingThere":string,"sourceUrls":[string]}],"budgetNote":string,"travelNote":string,"followUpPrompt":string}. items should contain 1-4 places, be appropriate to the selected mode, and favor Qloo candidates when possible. qlooFit must explain cultural fit from available Qloo evidence or say the recommendation was from Qloo's Bengaluru place graph when no per-place explanation is returned. goodToKnow should offer relevant practical context for the selected group, such as booking, accessibility, or family suitability, only when verified. Use source URLs from Google Search or Google Maps annotations when possible; no fabricated links. Use Google Maps to ground the ordering and give approximate travel times and transport guidance that match the user's selected mode. If Maps cannot confirm a duration, say to check the linked route instead of guessing.
-
-User request: ${JSON.stringify(input)}
-
-Qloo place candidates (use these as the source of cultural fit; do not add made-up Qloo data): ${JSON.stringify(places)}`;
-}
-
-async function geminiPlan(input, qlooPayload) {
-  const model = process.env.GEMINI_MODEL || 'gemini-3.7-flash';
-  const url = 'https://generativelanguage.googleapis.com/v1beta/interactions';
-  const locationTool = input.coordinates
-    ? { type: 'google_maps', latitude: input.coordinates.latitude, longitude: input.coordinates.longitude }
-    : { type: 'google_maps' };
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
-    body: JSON.stringify({
-      model,
-      input: geminiPrompt(input, qlooPayload),
-      tools: [{ type: 'google_search' }, locationTool]
-    }),
-    signal: AbortSignal.timeout(45_000)
-  });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(payload.error?.message || `Gemini returned ${response.status}.`);
-  const outputStep = payload.steps?.find(step => step.type === 'model_output') || payload.steps?.at(-1);
-  const blocks = Array.isArray(outputStep?.content) ? outputStep.content : [];
-  const text = blocks.map(block => block.text || '').join('') || payload.output_text || '';
-  const clean = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
-  let plan;
-  try { plan = JSON.parse(clean); } catch { throw new Error('Gemini returned a response that could not be read. Please try again.'); }
-  const annotations = blocks.flatMap(block => block.annotations || []);
-  const sources = annotations.map(annotation => ({ title: annotation.name || annotation.title || 'Source', platform: annotation.type === 'place_citation' ? 'Google Maps' : 'Web', url: annotation.url || annotation.uri })).filter(source => source.url);
-  return { plan, sources, qlooCount: qlooPayload?.results?.entities?.length || qlooPayload?.entities?.length || 0, live: true };
-}
-
 async function handlePlan(req, res) {
   const input = await readBody(req);
   if (!input || typeof input !== 'object') return json(res, 400, { error: 'Please describe what you want to explore.' });
-  const missing = ['QLOO_API_KEY', 'GEMINI_API_KEY'].filter(key => !process.env[key]);
-  if (missing.length) return json(res, 503, { error: 'Live recommendations are not connected yet.', missingKeys: missing });
-  try {
-    const qloo = await qlooPlaces(input);
-    const result = await geminiPlan(input, qloo);
-    json(res, 200, result);
-  } catch (error) {
-    json(res, 502, { error: error.message || 'Could not create a plan right now.' });
-  }
+  const result = await createPlan(input);
+  json(res, result.status, result.body);
 }
-
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  if (url.pathname === '/api/health') return json(res, 200, { qloo: Boolean(process.env.QLOO_API_KEY), gemini: Boolean(process.env.GEMINI_API_KEY) });
+  if (url.pathname === '/api/health') return json(res, 200, { qloo: Boolean(process.env.QLOO_API_KEY), gemini: Boolean(process.env.GEMINI_API_KEY || process.env.GEMINI_FALLBACK_API_KEY), geminiBackup: Boolean(process.env.GEMINI_FALLBACK_API_KEY) });
   if (url.pathname === '/api/plan' && req.method === 'POST') {
     if (overPlanLimit(req)) return json(res, 429, { error: 'A few plans have been requested in quick succession. Please try again in a minute.' });
     try { return await handlePlan(req, res); }
