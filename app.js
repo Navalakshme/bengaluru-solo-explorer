@@ -6,10 +6,30 @@ const budget = document.querySelector('#budget');
 const budgetValue = document.querySelector('#budget-value');
 const locationStatus = document.querySelector('#location-status');
 const startArea = document.querySelector('#start-area');
+const themeToggle = document.querySelector('#theme-toggle');
 let mode = 'day';
 let lastInput = null;
 let lastPlan = null;
 let coords = null;
+
+function setTheme(theme) {
+  const light = theme === 'light';
+  document.body.dataset.theme = light ? 'light' : 'dark';
+  themeToggle.setAttribute('aria-pressed', String(light));
+  themeToggle.setAttribute('aria-label', `Switch to ${light ? 'dark' : 'light'} mode`);
+  themeToggle.querySelector('.theme-toggle-label').textContent = light ? 'Dark' : 'Light';
+  themeToggle.querySelector('.theme-toggle-icon').textContent = light ? '☾' : '☼';
+  document.querySelector('meta[name="theme-color"]').content = light ? '#f1f4ed' : '#09121b';
+}
+
+let savedTheme = 'dark';
+try { savedTheme = localStorage.getItem('elsewhere-theme') || 'dark'; } catch {}
+setTheme(savedTheme);
+themeToggle.addEventListener('click', () => {
+  const nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+  setTheme(nextTheme);
+  try { localStorage.setItem('elsewhere-theme', nextTheme); } catch {}
+});
 
 const demoPlans = {
   day: { title: 'A slower side of Bengaluru', summary: 'A concept itinerary that leaves room to wander: ease into the day, find a little culture, then end somewhere green. Sample preview only; live place matches and current details need API keys.', budgetNote: 'Illustrative budget only. Check current menus and entry details before heading out.', items: [
@@ -55,6 +75,11 @@ function renderPlan(payload, preview = false) {
   lastPlan = plan;
   document.querySelector('#results-title').textContent = plan.title || 'A day that feels like yours.';
   document.querySelector('#results-summary').textContent = plan.summary || '';
+  const readback = document.querySelector('#mood-readback');
+  const interpretation = payload.interpretation;
+  const cues = [interpretation?.mood, ...(payload.qlooTasteSignals || [])].filter(Boolean);
+  readback.hidden = preview || cues.length === 0;
+  readback.textContent = cues.length ? `Plan cues · ${cues.map(safe).join(' · ')}` : '';
   document.querySelector('#result-mode-pill').textContent = mode.toUpperCase() === 'DAY' ? 'FULL DAY' : mode.toUpperCase();
   document.querySelector('#preview-banner').hidden = !preview;
   document.querySelector('#budget-note').hidden = !plan.budgetNote && !plan.travelNote;
@@ -100,7 +125,7 @@ async function createPlan(refinement = '') {
     const response = await fetch('/api/plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
     const payload = await response.json();
     if (response.ok) {
-      statusLine.textContent = `Qloo considered ${payload.qlooCount} place matches${payload.sources?.length ? ` · ${payload.sources.length} current sources` : ''}.`;
+      statusLine.textContent = `${payload.interpretation?.mood ? `Read your request as ${payload.interpretation.mood}. ` : ''}Qloo considered ${payload.qlooCount} place matches${payload.sources?.length ? ` · ${payload.sources.length} current sources` : ''}.`;
       renderPlan(payload, false);
     } else if (payload.missingKeys) {
       const sample = demoPlans[mode];

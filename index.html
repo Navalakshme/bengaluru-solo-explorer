@@ -17,6 +17,7 @@
     <header class="topbar">
       <a class="brand" href="#top" aria-label="Elsewhere home"><span class="brand-glyph" aria-hidden="true">✳</span><span>elsewhere<span class="brand-period">.</span></span></a>
       <nav class="nav-links" aria-label="Main navigation"><a href="#how">How it works</a><a href="#about">About</a></nav>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☼</span><span class="theme-toggle-label">Light</span></button>
       <div class="city-pill"><span class="live-dot"></span><span>BENGALURU · ಬೆಂಗಳೂರು</span><span class="city-pill-chevron" aria-hidden="true">⌄</span></div>
     </header>
 
@@ -87,7 +88,7 @@
 
             <details class="taste-details"><summary><span class="taste-symbol">✦</span><span>Add things you love</span><span class="taste-optional">OPTIONAL</span><span class="summary-chevron" aria-hidden="true">⌄</span></summary><div class="taste-content"><label class="field-label" for="favorites">Favorite foods, artists, films, or places</label><input id="favorites" placeholder="e.g. filter coffee, indie music, Cubbon Park"><p>Qloo can use these as taste signals. Leave blank to start with your mood.</p></div></details>
 
-            <div class="submit-row"><div class="privacy-note"><span class="lock-icon" aria-hidden="true">⌑</span> Your location is only used to shape this plan.</div><button class="plan-button" id="plan-button" type="submit"><span class="button-star" aria-hidden="true">✦</span><span>Find my Bengaluru day</span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
+            <div class="submit-row"><div class="privacy-note"><span class="lock-icon" aria-hidden="true">⌑</span> Your location is used to find nearby places and shape this plan.</div><button class="plan-button" id="plan-button" type="submit"><span class="button-star" aria-hidden="true">✦</span><span>Find my Bengaluru day</span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
             <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
           </form>
         </section>
@@ -97,6 +98,7 @@
         <div class="results-topline"><div><span class="section-kicker">YOUR BENGALURU, CURATED</span><h2 id="results-title">A day that feels like yours.</h2></div><span class="result-mode-pill" id="result-mode-pill">FULL DAY</span></div>
         <div id="preview-banner" class="preview-banner" hidden><span>✦</span><p><strong>Concept preview</strong> — sample places to show the experience. Add the missing API key in Vercel for live taste matches and current, sourced details.</p></div>
         <p id="results-summary" class="results-summary"></p>
+        <p id="mood-readback" class="mood-readback" hidden></p>
         <div id="itinerary" class="itinerary"></div>
         <div class="sources-row" id="sources-row" hidden><span>GOOGLE MAPS &amp; WEB SOURCES</span><div id="sources-list"></div></div>
         <div id="budget-note" class="budget-note" hidden></div>
@@ -104,7 +106,7 @@
         <p class="comfort-note"><span aria-hidden="true">✳</span> Practical details and route suggestions are sourced where available. Check live hours and routes before you go.</p>
       </section>
 
-      <section id="how" class="how-section"><div class="how-heading"><span class="section-kicker">NOT JUST ANOTHER TOP 10 LIST</span><h2>Find more of what makes <em>your Bengaluru.</em></h2></div><div class="how-grid"><article><span class="how-number">01</span><h3>Start with a feeling</h3><p>Choose a quick mood or describe the day in your own words. Set the budget, time, and who’s joining.</p></article><article><span class="how-number">02</span><h3>Find places with a point of view</h3><p>Qloo connects cultural tastes to local places. Gemini checks current details and explains the picks.</p></article><article><span class="how-number">03</span><h3>Get around Bengaluru</h3><p>Build a route that fits your day, with local context, practical travel guidance, and links to explore further.</p></article></div></section>
+      <section id="how" class="how-section"><div class="how-heading"><span class="section-kicker">NOT JUST ANOTHER TOP 10 LIST</span><h2>Find more of what makes <em>your Bengaluru.</em></h2></div><div class="how-grid"><article><span class="how-number">01</span><h3>Start with a feeling</h3><p>Choose a quick mood or describe the day in your own words. Set the budget, time, and who’s joining.</p></article><article><span class="how-number">02</span><h3>Find places with a point of view</h3><p>Gemini turns your request into taste and experience cues. Qloo uses those cues and your favorite things to find culturally connected places.</p></article><article><span class="how-number">03</span><h3>Get around Bengaluru</h3><p>Gemini checks practical details and shapes Qloo’s matches into a route, with links to explore further.</p></article></div></section>
 
       <footer id="about" class="footer"><a class="brand footer-brand" href="#top"><span class="brand-glyph" aria-hidden="true">✳</span><span>elsewhere<span class="brand-period">.</span></span></a><span>Find a little more of what you love.</span><span class="footer-city">BENGALURU · ಬೆಂಗಳೂರು</span></footer>
     </main>
