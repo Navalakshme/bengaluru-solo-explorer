@@ -142,6 +142,7 @@ a { color: inherit; }
 .results-topline h2 { font-size: 31px; }
 .result-mode-pill { padding: 8px 11px; border: 1px solid #506553; border-radius: 999px; background: #233a32; color: #bfe1bd; font: 700 8px var(--body); letter-spacing: 1px; }
 .preview-banner { display: flex; align-items: flex-start; gap: 11px; margin-top: 18px; padding: 12px 14px; border: 1px solid #806c47; border-radius: 10px; background: #312a21; color: #e0c79c; }
+.preview-banner[hidden] { display: none !important; }
 .preview-banner > span { color: #efb36d; }
 .preview-banner p { margin: 0; font-size: 10px; line-height: 1.6; }
 .preview-banner strong { color: #f3ddb4; }
