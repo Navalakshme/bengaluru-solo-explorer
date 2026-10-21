@@ -81,14 +81,9 @@ function renderPlan(payload, preview = false) {
   readback.hidden = preview || cues.length === 0;
   readback.textContent = cues.length ? `Plan cues · ${cues.map(safe).join(' · ')}` : '';
   document.querySelector('#result-mode-pill').textContent = mode.toUpperCase() === 'DAY' ? 'FULL DAY' : mode.toUpperCase();
-  const fallback = Boolean(payload.fallback);
-  document.querySelector('#preview-banner').hidden = !preview && !fallback;
-  document.querySelector('#preview-title').textContent = fallback ? 'Backup plan' : 'Concept preview';
-  document.querySelector('#preview-copy').textContent = fallback
-    ? payload.qlooMatchesUsed
-      ? ' — Gemini is temporarily unavailable. These Qloo matches are shown without AI-written or live-verified details.'
-      : ' — no close Qloo match was selected, so these familiar Bengaluru places are suggestions only; check current details before travelling.'
-    : ' — sample places to show the experience. Add the missing API key in Vercel for live taste matches and current, sourced details.';
+  document.querySelector('#preview-banner').hidden = !preview;
+  document.querySelector('#preview-title').textContent = 'Concept preview';
+  document.querySelector('#preview-copy').textContent = ' — sample places to show the experience. Add the missing API key in Vercel for live taste matches and current, sourced details.';
   document.querySelector('#budget-note').hidden = !plan.budgetNote && !plan.travelNote;
   document.querySelector('#budget-note').textContent = [plan.budgetNote, plan.travelNote].filter(Boolean).join(' ');
   const origin = coords ? `${coords.latitude},${coords.longitude}` : startArea.value.trim();
@@ -132,9 +127,7 @@ async function createPlan(refinement = '') {
     const response = await fetch('/api/plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
     const payload = await response.json();
     if (response.ok) {
-      statusLine.textContent = payload.fallback
-        ? `Backup plan ready. ${payload.qlooMatchesUsed ? `It includes ${payload.qlooMatchesUsed} relevant Qloo matches. ` : ''}Check details in Maps before heading out.`
-        : `${payload.backupKeyUsed ? 'Backup Gemini key worked. ' : ''}${payload.interpretation?.mood ? `Read your request as ${payload.interpretation.mood}. ` : ''}Qloo considered ${payload.qlooCount} place matches${payload.sources?.length ? ` · ${payload.sources.length} current sources` : ''}.`;
+      statusLine.textContent = `${payload.interpretation?.mood ? `Read your request as ${payload.interpretation.mood}. ` : ''}Qloo considered ${payload.qlooCount ?? payload.qlooMatchesUsed ?? 0} place matches${payload.sources?.length ? ` · ${payload.sources.length} current sources` : ''}.`;
       renderPlan(payload, false);
     } else if (payload.missingKeys) {
       const sample = demoPlans[mode];
