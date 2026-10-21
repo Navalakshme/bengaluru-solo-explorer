@@ -1,8 +1,8 @@
 # Bengaluru Solo Explorer
 
-A Bengaluru discovery and day-planning app for people exploring alone, with friends, with family, or as a group. Qloo powers taste-based place recommendations; Gemini turns a user's mood, budget, time, and company into a grounded outing plan.
+A Bengaluru discovery and day-planning app for people exploring alone, with friends, with family, or as a group. Qloo supplies culturally grounded place candidates; Gemini interprets the selected category and mood, removes mismatches, and turns the shortlist into useful outing recommendations.
 
-The Explore section includes 12 Qloo-powered Bengaluru categories: cafés, South Indian food, global dining, bakeries, gardens, art and museums, heritage, live music, bookshops, outdoors, wellness, and local shopping. Each category requests Qloo place matches for Bengaluru and includes location, mood fit, atmosphere cues, a suggested group size, and a clearly marked rough budget guide. Search accepts free-text place and taste queries.
+The Explore section includes 12 Qloo-powered Bengaluru categories: cafés, South Indian food, global dining, bakeries, gardens, art and museums, heritage, live music, bookshops, adventure activities, wellness, and local shopping. Qloo provides taste and location signals; Gemini filters the candidates against the category's strict intent (for example, gardens exclude malls, while adventure prioritizes bowling, karting, arcades, climbing, and similar activities). Search accepts free-text place and taste queries. Each card shows the mood fit, available Qloo cues, group-size guidance, and a clearly marked rough budget guide.
 
 ## Run locally
 
@@ -16,7 +16,7 @@ The app can also be explored in demo mode without API keys. Demo mode is clearly
 
 ## API keys
 
-Keep all keys on the server. Never put them in browser code or commit `.env` to the repository. If the primary Gemini key hits quota or fails, the app tries `GEMINI_FALLBACK_API_KEY`. If both Gemini keys fail, it returns Qloo's place matches; if Qloo is unavailable too, it shows a clearly labeled local Bengaluru shortlist.
+Keep all keys on the server. Never put them in browser code or commit `.env` to the repository. If the primary Gemini key hits quota or fails, the day planner tries `GEMINI_FALLBACK_API_KEY`. The discovery pages require Gemini curation to keep displayed places relevant to the selected category; if curation is unavailable, the API returns an error instead of presenting a misleading mixed list.
 
 ## Deploy on Vercel
 

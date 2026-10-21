@@ -71,7 +71,7 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
   document.querySelector('#discovery-page-icon').textContent = category.icon || '✳';
   document.querySelector('#discovery-page-intro').textContent = search ? `A Qloo-powered search shaped by “${search}” and Bengaluru. Group sizes and budgets are planning guides; confirm details with each venue.` : `A Qloo-curated look at ${category.name.toLowerCase()}, for a ${category.mood} kind of day. Group sizes and budgets are planning guides; confirm details with each venue.`;
   document.querySelector('#discovery-query-page').value = search;
-  document.querySelector('#discovery-status').textContent = 'Finding Qloo place matches around Bengaluru…';
+  document.querySelector('#discovery-status').textContent = 'Qloo is finding taste matches; Gemini is checking that each place fits this category…';
   document.querySelector('#discovery-results').innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const params = new URLSearchParams({ category: categoryId, area: startArea.value.trim() || 'Bengaluru' });
@@ -86,8 +86,8 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
     if (activeDiscoveryId !== categoryId || discoverySearch !== search) return;
     const places = Array.isArray(payload.places) ? payload.places : [];
     const status = places.length >= 10
-      ? `10+ Qloo matches · Bengaluru${search ? ` · search: ${search}` : ''}`
-      : `${places.length} Qloo matches · Try a broader search for more places.`;
+      ? `${places.length} relevant places · Qloo taste matches, refined by Gemini${search ? ` · search: ${search}` : ''}`
+      : `${places.length} relevant places · Qloo taste matches, checked by Gemini. Try a broader search for more.`;
     document.querySelector('#discovery-status').textContent = status;
     if (!places.length) {
       document.querySelector('#discovery-results').innerHTML = '<div class="discover-empty"><strong>No close matches yet.</strong><span>Try another word, a nearby neighbourhood, or a different taste category.</span></div>';
@@ -98,10 +98,12 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
       const tags = (Array.isArray(place.tags) ? place.tags : []).map(tag => tag?.name).filter(Boolean).slice(0, 4);
       const map = mapsUrl({ name: place.name, address }, startArea.value.trim() || 'Bengaluru');
       const group = category.company || 'Choose what works for your group';
-      const atmosphere = tags.length ? `${category.ambience} Taste cues: ${tags.join(', ')}.` : category.ambience;
+      const mood = place.curatedMood || category.mood;
+      const atmosphere = place.curatedAmbience || (tags.length ? `${category.ambience} Taste cues: ${tags.join(', ')}.` : category.ambience);
+      const fit = place.curatedFit || explainability(place, payload.signals || []);
       const listedPrice = priceLevel(place);
       const budgetGuide = listedPrice.startsWith('Not listed') ? category.budget : `${listedPrice} · ${category.budget}`;
-      return `<article class="discovery-card"><div class="discovery-card-top"><span class="discovery-number">${String(index + 1).padStart(2, '0')}</span><span class="discovery-category">${safe(category.name)}</span></div><h3>${safe(place.name)}</h3><p class="discovery-address">⌖ ${safe(address)}</p><p class="discovery-description">A ${safe(category.mood)} mood for this Bengaluru outing. ${safe(explainability(place, payload.signals || []))}</p><div class="discovery-details"><div><span>Mood</span><strong>${safe(category.mood)}</strong></div><div><span>Ambience cue</span><strong>${safe(atmosphere)}</strong></div><div><span>Suggested group size</span><strong>${safe(group)}</strong></div><div><span>Budget guide</span><strong>${safe(budgetGuide)}</strong></div></div>${tags.length ? `<div class="discovery-tags">${tags.map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}<div class="discovery-card-footer"><span>Qloo cultural match${place.affinity !== undefined ? ` · ${safe(place.affinity)}` : ''}</span><a href="${map}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a></div></article>`;
+      return `<article class="discovery-card"><div class="discovery-card-top"><span class="discovery-number">${String(index + 1).padStart(2, '0')}</span><span class="discovery-category">${safe(category.name)}</span></div><h3>${safe(place.name)}</h3><p class="discovery-address">⌖ ${safe(address)}</p><p class="discovery-description">${safe(fit)}</p><div class="discovery-details"><div><span>Mood</span><strong>${safe(mood)}</strong></div><div><span>Ambience cue</span><strong>${safe(atmosphere)}</strong></div><div><span>Suggested group size</span><strong>${safe(group)}</strong></div><div><span>Budget guide</span><strong>${safe(budgetGuide)}</strong></div></div>${tags.length ? `<div class="discovery-tags">${tags.map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}<div class="discovery-card-footer"><span>Qloo cultural match${place.affinity !== undefined ? ` · ${safe(place.affinity)}` : ''} · Gemini category check</span><a href="${map}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a></div></article>`;
     }).join('');
   }).catch(error => {
     if (activeDiscoveryId !== categoryId || discoverySearch !== search) return;

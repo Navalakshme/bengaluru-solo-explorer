@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createPlan } from './lib/planner.js';
+import { createPlan, curateDiscoveryPlaces } from './lib/planner.js';
 import { DISCOVERY_CATEGORIES, qlooDiscoverPlaces } from './lib/qloo.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -63,7 +63,14 @@ async function handleDiscovery(url, res) {
       startArea: (url.searchParams.get('area') || 'Bengaluru').slice(0, 100),
       favorites: (url.searchParams.get('favorites') || '').split(',').map(value => value.trim()).filter(Boolean).slice(0, 5)
     });
-    return json(res, 200, result);
+    const curated = await curateDiscoveryPlaces({
+      category: result.category,
+      search: result.search,
+      area: (url.searchParams.get('area') || 'Bengaluru').slice(0, 100),
+      signals: result.signals,
+      places: result.places
+    });
+    return json(res, 200, { ...result, ...curated });
   } catch (error) {
     console.error('[discovery] Qloo browse request failed:', error?.message || error);
     return json(res, 502, { error: 'Could not load these Qloo place matches right now. Try another category or search.' });
