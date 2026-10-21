@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createPlan } from './lib/planner.js';
+import { DISCOVERY_CATEGORIES, qlooDiscoverPlaces } from './lib/qloo.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 loadEnv(path.join(ROOT, '.env'));
@@ -51,9 +52,28 @@ async function handlePlan(req, res) {
   const result = await createPlan(input);
   json(res, result.status, result.body);
 }
+
+async function handleDiscovery(url, res) {
+  if (url.searchParams.get('catalog') === '1') return json(res, 200, { categories: DISCOVERY_CATEGORIES });
+  if (!process.env.QLOO_API_KEY) return json(res, 503, { error: 'Add the Qloo API key to browse live place matches.' });
+  try {
+    const result = await qlooDiscoverPlaces({
+      categoryId: url.searchParams.get('category') || 'all',
+      search: url.searchParams.get('search') || '',
+      startArea: (url.searchParams.get('area') || 'Bengaluru').slice(0, 100),
+      favorites: (url.searchParams.get('favorites') || '').split(',').map(value => value.trim()).filter(Boolean).slice(0, 5)
+    });
+    return json(res, 200, result);
+  } catch (error) {
+    console.error('[discovery] Qloo browse request failed:', error?.message || error);
+    return json(res, 502, { error: 'Could not load these Qloo place matches right now. Try another category or search.' });
+  }
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   if (url.pathname === '/api/health') return json(res, 200, { qloo: Boolean(process.env.QLOO_API_KEY), gemini: Boolean(process.env.GEMINI_API_KEY || process.env.GEMINI_FALLBACK_API_KEY), geminiBackup: Boolean(process.env.GEMINI_FALLBACK_API_KEY) });
+  if (url.pathname === '/api/discover' && req.method === 'GET') return handleDiscovery(url, res);
   if (url.pathname === '/api/plan' && req.method === 'POST') {
     if (overPlanLimit(req)) return json(res, 429, { error: 'A few plans have been requested in quick succession. Please try again in a minute.' });
     try { return await handlePlan(req, res); }

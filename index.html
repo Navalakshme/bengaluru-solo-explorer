@@ -16,7 +16,7 @@
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="#top" aria-label="Elsewhere home"><span class="brand-glyph" aria-hidden="true">✳</span><span>elsewhere<span class="brand-period">.</span></span></a>
-      <nav class="nav-links" aria-label="Main navigation"><a href="#how">How it works</a><a href="#about">About</a></nav>
+      <nav class="nav-links" aria-label="Main navigation"><a href="#top">Plan a day</a><a href="#explore">Explore tastes</a><a href="#about">About</a></nav>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☼</span><span class="theme-toggle-label">Light</span></button>
       <div class="city-pill"><span class="live-dot"></span><span>BENGALURU · ಬೆಂಗಳೂರು</span><span class="city-pill-chevron" aria-hidden="true">⌄</span></div>
     </header>
@@ -94,6 +94,20 @@
         </section>
       </section>
 
+      <section id="explore" class="discover-section" aria-labelledby="discover-title">
+        <div class="discover-heading"><div><span class="section-kicker">A CITY FULL OF DIFFERENT MOODS</span><h2 id="discover-title">Find places that feel <em>like you.</em></h2><p>Browse Qloo-powered Bengaluru picks by the kind of day you want, or search for something specific.</p></div><span class="discover-mark" aria-hidden="true">✳</span></div>
+        <form id="discovery-search" class="discovery-search"><label class="visually-hidden" for="discovery-query">Search places, food, moods, or interests</label><span aria-hidden="true">⌕</span><input id="discovery-query" type="search" placeholder="Try filter coffee, quiet gardens, live jazz, bookstores…"><button type="submit">Search Bengaluru <span aria-hidden="true">↗</span></button></form>
+        <div id="category-grid" class="category-grid" aria-live="polite"><p class="discover-loading">Finding your starting points…</p></div>
+      </section>
+
+      <section id="discover-page" class="discover-page" hidden aria-live="polite">
+        <button type="button" class="back-to-discover" id="back-to-discover">← All tastes</button>
+        <div class="discover-heading page-heading"><div><span class="section-kicker" id="discovery-eyebrow">QLOO PLACE MATCHES · BENGALURU</span><h2 id="discovery-page-title">Places for your kind of day.</h2><p id="discovery-page-intro"></p></div><span class="discover-mark" id="discovery-page-icon" aria-hidden="true">✳</span></div>
+        <form id="discovery-search-page" class="discovery-search"><label class="visually-hidden" for="discovery-query-page">Search places, food, moods, or interests</label><span aria-hidden="true">⌕</span><input id="discovery-query-page" type="search" placeholder="Search another place, mood, food, or interest…"><button type="submit">Search <span aria-hidden="true">↗</span></button></form>
+        <p id="discovery-status" class="discovery-status" role="status" aria-live="polite"></p>
+        <div id="discovery-results" class="discovery-results"></div>
+      </section>
+
       <section class="results-section" id="results" hidden aria-live="polite">
         <div class="results-topline"><div><span class="section-kicker">YOUR BENGALURU, CURATED</span><h2 id="results-title">A day that feels like yours.</h2></div><span class="result-mode-pill" id="result-mode-pill">FULL DAY</span></div>
         <div id="preview-banner" class="preview-banner" hidden><span>✦</span><p><strong id="preview-title">Concept preview</strong><span id="preview-copy"> — sample places to show the experience. Add the missing API key in Vercel for live taste matches and current, sourced details.</span></p></div>
@@ -105,8 +119,6 @@
         <div class="refine-card"><div class="refine-icon" aria-hidden="true">↻</div><div class="refine-copy"><strong>Want to shape it a little?</strong><span>Ask for a closer, calmer, cheaper, or more adventurous plan.</span></div><form id="refine-form" class="refine-form"><label class="visually-hidden" for="refine-input">Refine the plan</label><input id="refine-input" placeholder="Closer, less busy, more adventurous…"><button type="submit" aria-label="Update plan">↗</button></form></div>
         <p class="comfort-note"><span aria-hidden="true">✳</span> Practical details and route suggestions are sourced where available. Check live hours and routes before you go.</p>
       </section>
-
-      <section id="how" class="how-section"><div class="how-heading"><span class="section-kicker">NOT JUST ANOTHER TOP 10 LIST</span><h2>Find more of what makes <em>your Bengaluru.</em></h2></div><div class="how-grid"><article><span class="how-number">01</span><h3>Start with a feeling</h3><p>Choose a quick mood or describe the day in your own words. Set the budget, time, and who’s joining.</p></article><article><span class="how-number">02</span><h3>Find places with a point of view</h3><p>Gemini turns your request into taste and experience cues. Qloo uses those cues and your favorite things to find culturally connected places.</p></article><article><span class="how-number">03</span><h3>Get around Bengaluru</h3><p>Gemini checks practical details and shapes Qloo’s matches into a route, with links to explore further.</p></article></div></section>
 
       <footer id="about" class="footer"><a class="brand footer-brand" href="#top"><span class="brand-glyph" aria-hidden="true">✳</span><span>elsewhere<span class="brand-period">.</span></span></a><span>Find a little more of what you love.</span><span class="footer-city">BENGALURU · ಬೆಂಗಳೂರು</span></footer>
     </main>

@@ -11,6 +11,137 @@ let mode = 'day';
 let lastInput = null;
 let lastPlan = null;
 let coords = null;
+let discoveryCategories = [];
+let discoverySearch = '';
+let activeDiscoveryId = 'all';
+
+function renderCategoryCards() {
+  const grid = document.querySelector('#category-grid');
+  grid.innerHTML = discoveryCategories.map(category => `<button class="category-card" type="button" data-category="${safe(category.id)}"><span class="category-icon" aria-hidden="true">${safe(category.icon || '✳')}</span><span class="category-copy"><strong>${safe(category.name)}</strong><span>${safe(category.mood)}</span></span><span class="category-arrow" aria-hidden="true">↗</span></button>`).join('');
+}
+
+async function loadDiscoveryCategories() {
+  try {
+    const response = await fetch('/api/discover?catalog=1');
+    const payload = await response.json();
+    if (!response.ok || !Array.isArray(payload.categories)) throw new Error('Could not load categories.');
+    discoveryCategories = payload.categories;
+    renderCategoryCards();
+  } catch {
+    document.querySelector('#category-grid').innerHTML = '<p class="discover-loading">Place categories are temporarily unavailable. Use the planner above to describe what you are looking for.</p>';
+  }
+}
+
+function priceLevel(place) {
+  const value = Number(place.properties?.price_level ?? place.price_level);
+  const labels = ['Free / no charge', '₹ · Inexpensive', '₹₹ · Moderate', '₹₹₹ · Expensive', '₹₹₹₹ · Premium'];
+  return Number.isInteger(value) && value >= 0 && value < labels.length ? labels[value] : 'Not listed by Qloo · check venue';
+}
+
+function placeAddress(place) {
+  const address = place.properties?.address || place.properties?.formatted_address || place.properties?.geocode?.address;
+  if (typeof address === 'string') return address;
+  if (address && typeof address === 'object') return [address.name, address.neighborhood, address.locality, address.city].filter(Boolean).join(', ');
+  return [place.properties?.geocode?.neighborhood, place.properties?.geocode?.city, 'Bengaluru'].filter(Boolean).join(', ');
+}
+
+function explainability(place, signals) {
+  const value = place.query?.explainability || place.explainability;
+  if (typeof value === 'string' && value.trim()) return value.trim();
+  const tags = (Array.isArray(place.tags) ? place.tags : []).map(tag => tag?.name).filter(Boolean).slice(0, 4);
+  return tags.length ? `Qloo associates this place with ${tags.join(', ')}.` : `Qloo matched it with ${signals.join(', ')} around Bengaluru.`;
+}
+
+function renderDiscoveryPage(categoryId = 'all', search = '') {
+  activeDiscoveryId = categoryId;
+  discoverySearch = search;
+  document.querySelector('.hero-grid').hidden = true;
+  document.querySelector('#explore').hidden = true;
+  document.querySelector('#results').hidden = true;
+  const page = document.querySelector('#discover-page');
+  page.hidden = false;
+  const category = discoveryCategories.find(item => item.id === categoryId) || { id: 'all', name: search ? 'Search Bengaluru' : 'All tastes', icon: '⌕', mood: 'a little of everything', ambience: 'A mix of place ideas from across Bengaluru.', company: 'Suggested 1–4 people; confirm seating or activity capacity.', budget: 'Rough spend guide varies by place; check menus, tickets, and venue details.' };
+  document.querySelector('#discovery-page-title').textContent = search ? `Bengaluru picks for “${search}”` : category.name;
+  document.querySelector('#discovery-page-icon').textContent = category.icon || '✳';
+  document.querySelector('#discovery-page-intro').textContent = search ? `A Qloo-powered search shaped by “${search}” and Bengaluru. Group sizes and budgets are planning guides; confirm details with each venue.` : `A Qloo-curated look at ${category.name.toLowerCase()}, for a ${category.mood} kind of day. Group sizes and budgets are planning guides; confirm details with each venue.`;
+  document.querySelector('#discovery-query-page').value = search;
+  document.querySelector('#discovery-status').textContent = 'Finding Qloo place matches around Bengaluru…';
+  document.querySelector('#discovery-results').innerHTML = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const params = new URLSearchParams({ category: categoryId, area: startArea.value.trim() || 'Bengaluru' });
+  if (search) params.set('search', search);
+  const favoriteNames = document.querySelector('#favorites').value.split(',').map(value => value.trim()).filter(Boolean).slice(0, 5);
+  if (favoriteNames.length) params.set('favorites', favoriteNames.join(','));
+  fetch(`/api/discover?${params}`).then(async response => {
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error || 'Could not find places.');
+    return payload;
+  }).then(payload => {
+    if (activeDiscoveryId !== categoryId || discoverySearch !== search) return;
+    const places = Array.isArray(payload.places) ? payload.places : [];
+    const status = places.length >= 10
+      ? `10+ Qloo matches · Bengaluru${search ? ` · search: ${search}` : ''}`
+      : `${places.length} Qloo matches · Try a broader search for more places.`;
+    document.querySelector('#discovery-status').textContent = status;
+    if (!places.length) {
+      document.querySelector('#discovery-results').innerHTML = '<div class="discover-empty"><strong>No close matches yet.</strong><span>Try another word, a nearby neighbourhood, or a different taste category.</span></div>';
+      return;
+    }
+    document.querySelector('#discovery-results').innerHTML = places.map((place, index) => {
+      const address = placeAddress(place);
+      const tags = (Array.isArray(place.tags) ? place.tags : []).map(tag => tag?.name).filter(Boolean).slice(0, 4);
+      const map = mapsUrl({ name: place.name, address }, startArea.value.trim() || 'Bengaluru');
+      const group = category.company || 'Choose what works for your group';
+      const atmosphere = tags.length ? `${category.ambience} Taste cues: ${tags.join(', ')}.` : category.ambience;
+      const listedPrice = priceLevel(place);
+      const budgetGuide = listedPrice.startsWith('Not listed') ? category.budget : `${listedPrice} · ${category.budget}`;
+      return `<article class="discovery-card"><div class="discovery-card-top"><span class="discovery-number">${String(index + 1).padStart(2, '0')}</span><span class="discovery-category">${safe(category.name)}</span></div><h3>${safe(place.name)}</h3><p class="discovery-address">⌖ ${safe(address)}</p><p class="discovery-description">A ${safe(category.mood)} mood for this Bengaluru outing. ${safe(explainability(place, payload.signals || []))}</p><div class="discovery-details"><div><span>Mood</span><strong>${safe(category.mood)}</strong></div><div><span>Ambience cue</span><strong>${safe(atmosphere)}</strong></div><div><span>Suggested group size</span><strong>${safe(group)}</strong></div><div><span>Budget guide</span><strong>${safe(budgetGuide)}</strong></div></div>${tags.length ? `<div class="discovery-tags">${tags.map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}<div class="discovery-card-footer"><span>Qloo cultural match${place.affinity !== undefined ? ` · ${safe(place.affinity)}` : ''}</span><a href="${map}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a></div></article>`;
+    }).join('');
+  }).catch(error => {
+    if (activeDiscoveryId !== categoryId || discoverySearch !== search) return;
+    document.querySelector('#discovery-status').textContent = error.message || 'Could not load Qloo place matches.';
+  });
+}
+
+function showPlannerPage() {
+  document.querySelector('.hero-grid').hidden = false;
+  document.querySelector('#explore').hidden = false;
+  document.querySelector('#discover-page').hidden = true;
+}
+
+function navigateToDiscovery(categoryId, search = '') {
+  discoverySearch = search;
+  const nextHash = `#places/${categoryId}`;
+  if (location.hash === nextHash) renderDiscoveryPage(categoryId, search);
+  else location.hash = nextHash;
+}
+
+window.addEventListener('hashchange', () => {
+  const match = location.hash.match(/^#places\/([^/?#]+)/);
+  if (match) renderDiscoveryPage(decodeURIComponent(match[1]), discoverySearch);
+  else showPlannerPage();
+});
+
+document.querySelector('#category-grid').addEventListener('click', event => {
+  const button = event.target.closest('[data-category]');
+  if (button) navigateToDiscovery(button.dataset.category);
+});
+document.querySelector('#discovery-search').addEventListener('submit', event => {
+  event.preventDefault();
+  const search = document.querySelector('#discovery-query').value.trim();
+  if (search) navigateToDiscovery('all', search);
+});
+document.querySelector('#discovery-search-page').addEventListener('submit', event => {
+  event.preventDefault();
+  const search = document.querySelector('#discovery-query-page').value.trim();
+  if (search) navigateToDiscovery('all', search);
+});
+document.querySelector('#back-to-discover').addEventListener('click', () => { location.hash = '#explore'; });
+loadDiscoveryCategories();
+if (location.hash.startsWith('#places/')) {
+  const id = decodeURIComponent(location.hash.slice('#places/'.length).split(/[/?#]/)[0]);
+  renderDiscoveryPage(id, '');
+}
 
 function setTheme(theme) {
   const light = theme === 'light';

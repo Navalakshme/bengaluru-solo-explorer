@@ -1,6 +1,8 @@
 # Bengaluru Solo Explorer
 
-A taste-aware day planner for people exploring Bengaluru on their own. Qloo recommends places using cultural taste signals; Gemini interprets the request, grounds current details with Google Search and Google Maps, and turns the results into a flexible plan.
+A Bengaluru discovery and day-planning app for people exploring alone, with friends, with family, or as a group. Qloo powers taste-based place recommendations; Gemini turns a user's mood, budget, time, and company into a grounded outing plan.
+
+The Explore section includes 12 Qloo-powered Bengaluru categories: cafés, South Indian food, global dining, bakeries, gardens, art and museums, heritage, live music, bookshops, outdoors, wellness, and local shopping. Each category requests Qloo place matches for Bengaluru and includes location, mood fit, atmosphere cues, a suggested group size, and a clearly marked rough budget guide. Search accepts free-text place and taste queries.
 
 ## Run locally
 
