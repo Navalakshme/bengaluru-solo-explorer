@@ -27,6 +27,11 @@ async function loadDiscoveryCategories() {
     if (!response.ok || !Array.isArray(payload.categories)) throw new Error('Could not load categories.');
     discoveryCategories = payload.categories;
     renderCategoryCards();
+    if (location.hash.startsWith('#places/')) {
+      const route = location.hash.slice('#places/'.length);
+      const [id, query = ''] = route.split('?');
+      renderDiscoveryPage(decodeURIComponent(id), new URLSearchParams(query).get('q') || '');
+    }
   } catch {
     document.querySelector('#category-grid').innerHTML = '<p class="discover-loading">Place categories are temporarily unavailable. Use the planner above to describe what you are looking for.</p>';
   }
@@ -58,6 +63,7 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
   document.querySelector('.hero-grid').hidden = true;
   document.querySelector('#explore').hidden = true;
   document.querySelector('#results').hidden = true;
+  document.body.classList.add('is-discovery-page');
   const page = document.querySelector('#discover-page');
   page.hidden = false;
   const category = discoveryCategories.find(item => item.id === categoryId) || { id: 'all', name: search ? 'Search Bengaluru' : 'All tastes', icon: '⌕', mood: 'a little of everything', ambience: 'A mix of place ideas from across Bengaluru.', company: 'Suggested 1–4 people; confirm seating or activity capacity.', budget: 'Rough spend guide varies by place; check menus, tickets, and venue details.' };
@@ -104,6 +110,7 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
 }
 
 function showPlannerPage() {
+  document.body.classList.remove('is-discovery-page');
   document.querySelector('.hero-grid').hidden = false;
   document.querySelector('#explore').hidden = false;
   document.querySelector('#discover-page').hidden = true;
@@ -111,14 +118,14 @@ function showPlannerPage() {
 
 function navigateToDiscovery(categoryId, search = '') {
   discoverySearch = search;
-  const nextHash = `#places/${categoryId}`;
+  const nextHash = `#places/${encodeURIComponent(categoryId)}${search ? `?q=${encodeURIComponent(search)}` : ''}`;
   if (location.hash === nextHash) renderDiscoveryPage(categoryId, search);
   else location.hash = nextHash;
 }
 
 window.addEventListener('hashchange', () => {
-  const match = location.hash.match(/^#places\/([^/?#]+)/);
-  if (match) renderDiscoveryPage(decodeURIComponent(match[1]), discoverySearch);
+  const match = location.hash.match(/^#places\/([^?#]+)/);
+  if (match) renderDiscoveryPage(decodeURIComponent(match[1]), new URLSearchParams(location.hash.split('?')[1] || '').get('q') || '');
   else showPlannerPage();
 });
 
@@ -138,10 +145,6 @@ document.querySelector('#discovery-search-page').addEventListener('submit', even
 });
 document.querySelector('#back-to-discover').addEventListener('click', () => { location.hash = '#explore'; });
 loadDiscoveryCategories();
-if (location.hash.startsWith('#places/')) {
-  const id = decodeURIComponent(location.hash.slice('#places/'.length).split(/[/?#]/)[0]);
-  renderDiscoveryPage(id, '');
-}
 
 function setTheme(theme) {
   const light = theme === 'light';
