@@ -85,9 +85,9 @@ function renderPlan(payload, preview = false) {
   document.querySelector('#preview-banner').hidden = !preview && !fallback;
   document.querySelector('#preview-title').textContent = fallback ? 'Backup plan' : 'Concept preview';
   document.querySelector('#preview-copy').textContent = fallback
-    ? payload.qlooCount
+    ? payload.qlooMatchesUsed
       ? ' — Gemini is temporarily unavailable. These Qloo matches are shown without AI-written or live-verified details.'
-      : ' — recommendation services are temporarily unavailable. These familiar Bengaluru places are suggestions only; check current details before travelling.'
+      : ' — no close Qloo match was selected, so these familiar Bengaluru places are suggestions only; check current details before travelling.'
     : ' — sample places to show the experience. Add the missing API key in Vercel for live taste matches and current, sourced details.';
   document.querySelector('#budget-note').hidden = !plan.budgetNote && !plan.travelNote;
   document.querySelector('#budget-note').textContent = [plan.budgetNote, plan.travelNote].filter(Boolean).join(' ');
@@ -133,7 +133,7 @@ async function createPlan(refinement = '') {
     const payload = await response.json();
     if (response.ok) {
       statusLine.textContent = payload.fallback
-        ? `Backup plan ready. ${payload.qlooCount ? `It includes ${payload.qlooCount} Qloo place matches. ` : ''}Check details in Maps before heading out.`
+        ? `Backup plan ready. ${payload.qlooMatchesUsed ? `It includes ${payload.qlooMatchesUsed} relevant Qloo matches. ` : ''}Check details in Maps before heading out.`
         : `${payload.backupKeyUsed ? 'Backup Gemini key worked. ' : ''}${payload.interpretation?.mood ? `Read your request as ${payload.interpretation.mood}. ` : ''}Qloo considered ${payload.qlooCount} place matches${payload.sources?.length ? ` · ${payload.sources.length} current sources` : ''}.`;
       renderPlan(payload, false);
     } else if (payload.missingKeys) {
