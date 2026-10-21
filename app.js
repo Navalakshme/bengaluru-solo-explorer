@@ -85,9 +85,11 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
   }).then(payload => {
     if (activeDiscoveryId !== categoryId || discoverySearch !== search) return;
     const places = Array.isArray(payload.places) ? payload.places : [];
-    const status = places.length >= 10
-      ? `${places.length} relevant places · Qloo taste matches, refined by Gemini${search ? ` · search: ${search}` : ''}`
-      : `${places.length} relevant places · Qloo taste matches, checked by Gemini. Try a broader search for more.`;
+    const status = payload.geminiCurated === false
+      ? `${places.length} Qloo matches · ${payload.curationStatus || 'Gemini could not refine this list right now.'}`
+      : places.length >= 10
+        ? `${places.length} relevant places · Qloo taste matches, refined by Gemini${search ? ` · search: ${search}` : ''}`
+        : `${places.length} relevant places · Qloo taste matches, checked by Gemini. Try a broader search for more.`;
     document.querySelector('#discovery-status').textContent = status;
     if (!places.length) {
       document.querySelector('#discovery-results').innerHTML = '<div class="discover-empty"><strong>No close matches yet.</strong><span>Try another word, a nearby neighbourhood, or a different taste category.</span></div>';
@@ -103,7 +105,8 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
       const fit = place.curatedFit || explainability(place, payload.signals || []);
       const listedPrice = priceLevel(place);
       const budgetGuide = listedPrice.startsWith('Not listed') ? category.budget : `${listedPrice} · ${category.budget}`;
-      return `<article class="discovery-card"><div class="discovery-card-top"><span class="discovery-number">${String(index + 1).padStart(2, '0')}</span><span class="discovery-category">${safe(category.name)}</span></div><h3>${safe(place.name)}</h3><p class="discovery-address">⌖ ${safe(address)}</p><p class="discovery-description">${safe(fit)}</p><div class="discovery-details"><div><span>Mood</span><strong>${safe(mood)}</strong></div><div><span>Ambience cue</span><strong>${safe(atmosphere)}</strong></div><div><span>Suggested group size</span><strong>${safe(group)}</strong></div><div><span>Budget guide</span><strong>${safe(budgetGuide)}</strong></div></div>${tags.length ? `<div class="discovery-tags">${tags.map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}<div class="discovery-card-footer"><span>Qloo cultural match${place.affinity !== undefined ? ` · ${safe(place.affinity)}` : ''} · Gemini category check</span><a href="${map}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a></div></article>`;
+      const curationLabel = payload.geminiCurated === false ? 'Qloo place match' : 'Qloo match · Gemini category check';
+      return `<article class="discovery-card"><div class="discovery-card-top"><span class="discovery-number">${String(index + 1).padStart(2, '0')}</span><span class="discovery-category">${safe(category.name)}</span></div><h3>${safe(place.name)}</h3><p class="discovery-address">⌖ ${safe(address)}</p><p class="discovery-description">${safe(fit)}</p><div class="discovery-details"><div><span>Mood</span><strong>${safe(mood)}</strong></div><div><span>Ambience cue</span><strong>${safe(atmosphere)}</strong></div><div><span>Suggested group size</span><strong>${safe(group)}</strong></div><div><span>Budget guide</span><strong>${safe(budgetGuide)}</strong></div></div>${tags.length ? `<div class="discovery-tags">${tags.map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}<div class="discovery-card-footer"><span>${curationLabel}${place.affinity !== undefined ? ` · ${safe(place.affinity)}` : ''}</span><a href="${map}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a></div></article>`;
     }).join('');
   }).catch(error => {
     if (activeDiscoveryId !== categoryId || discoverySearch !== search) return;

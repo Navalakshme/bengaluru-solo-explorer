@@ -63,17 +63,26 @@ async function handleDiscovery(url, res) {
       startArea: (url.searchParams.get('area') || 'Bengaluru').slice(0, 100),
       favorites: (url.searchParams.get('favorites') || '').split(',').map(value => value.trim()).filter(Boolean).slice(0, 5)
     });
-    const curated = await curateDiscoveryPlaces({
-      category: result.category,
-      search: result.search,
-      area: (url.searchParams.get('area') || 'Bengaluru').slice(0, 100),
-      signals: result.signals,
-      places: result.places
-    });
-    return json(res, 200, { ...result, ...curated });
+    try {
+      const curated = await curateDiscoveryPlaces({
+        category: result.category,
+        search: result.search,
+        area: (url.searchParams.get('area') || 'Bengaluru').slice(0, 100),
+        signals: result.signals,
+        places: result.places
+      });
+      return json(res, 200, { ...result, ...curated });
+    } catch (error) {
+      console.error('[discovery] Gemini curation unavailable:', error?.message || error);
+      return json(res, 200, {
+        ...result,
+        geminiCurated: false,
+        curationStatus: 'Qloo matches are shown; Gemini could not refine them right now.'
+      });
+    }
   } catch (error) {
     console.error('[discovery] Qloo browse request failed:', error?.message || error);
-    return json(res, 502, { error: 'Could not load these Qloo place matches right now. Try another category or search.' });
+    return json(res, 502, { error: 'Qloo could not return place matches right now. Please try again shortly.' });
   }
 }
 
