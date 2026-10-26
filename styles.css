@@ -64,9 +64,8 @@ a { color: inherit; }
 .planner-head { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 20px; }
 .planner-head h2, .results-topline h2 { margin: 6px 0 0; color: #f6f2e9; font: 400 23px var(--display); letter-spacing: -.2px; }
 .ai-stack { display: flex; align-items: center; gap: 5px; color: #aebbb5; }
-.qloo-mark, .gemini-mark { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 6px; font: 800 11px var(--body); }
+.qloo-mark { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 6px; font: 800 11px var(--body); }
 .qloo-mark { background: #315742; color: #b5e2bf; }
-.gemini-mark { color: #e3a8fa; font-size: 15px; }
 .plus { color: #778985; font-size: 10px; }
 .ai-label { margin-left: 3px; color: #aebbb5; font: 700 7px var(--body); letter-spacing: .9px; white-space: nowrap; }
 .ai-label b { color: #82918c; }
@@ -328,7 +327,7 @@ body { font-size: 16px; }
   .planner-head { align-items: flex-start; margin-bottom: 17px; }
   .planner-head h2 { font-size: 21px; }
   .ai-stack { gap: 4px; padding-top: 3px; }
-  .qloo-mark, .gemini-mark { width: 17px; height: 17px; font-size: 9px; }
+  .qloo-mark { width: 17px; height: 17px; font-size: 9px; }
   .ai-label { display: none; }
   .request-label { font-size: 10px; }
   .request-box { gap: 8px; padding: 11px; }

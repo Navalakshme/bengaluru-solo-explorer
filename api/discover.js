@@ -1,5 +1,4 @@
 import { DISCOVERY_CATEGORIES, qlooDiscoverPlaces } from '../lib/qloo.js';
-import { curateDiscoveryPlaces } from '../lib/planner.js';
 
 export default async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store');
@@ -14,24 +13,7 @@ export default async function handler(request, response) {
       startArea: String(request.query?.area || 'Bengaluru').slice(0, 100),
       favorites: String(request.query?.favorites || '').split(',').map(value => value.trim()).filter(Boolean).slice(0, 5)
     });
-    try {
-      const curated = await curateDiscoveryPlaces({
-        category: result.category,
-        search: result.search,
-        area: String(request.query?.area || 'Bengaluru').slice(0, 100),
-        signals: result.signals,
-        places: result.places
-      });
-      return response.status(200).json({ ...result, ...curated });
-    } catch (error) {
-      // A Gemini quota or transient error must not turn a successful Qloo browse into a failed page.
-      console.error('[discovery] Gemini curation unavailable:', error?.message || error);
-      return response.status(200).json({
-        ...result,
-        geminiCurated: false,
-        curationStatus: 'Qloo matches are shown; Gemini could not refine them right now.'
-      });
-    }
+    return response.status(200).json(result);
   } catch (error) {
     console.error('[discovery] Qloo browse request failed:', error?.message || error);
     return response.status(502).json({ error: 'Qloo could not return place matches right now. Please try again shortly.' });

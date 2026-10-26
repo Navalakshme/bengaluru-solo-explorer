@@ -1,31 +1,31 @@
-# Bengaluru Solo Explorer
+# Elsewhere — Bengaluru discovery
 
-A Bengaluru discovery and day-planning app for people exploring alone, with friends, with family, or as a group. Qloo supplies culturally grounded place candidates; Gemini interprets the selected category and mood, removes mismatches, and turns the shortlist into useful outing recommendations.
+A Bengaluru discovery and day-planning app for people exploring alone, with friends, with family, or as a group. Qloo is the sole recommendation engine: the app sends mood, category, starting area, and optional favorite entities as taste signals, then presents Qloo place matches with its available tags and explainability.
 
-The Explore section includes 12 Qloo-powered Bengaluru categories: cafés, South Indian food, global dining, bakeries, gardens, art and museums, heritage, live music, bookshops, adventure activities, wellness, and local shopping. Qloo provides taste and location signals; Gemini filters the candidates against the category's strict intent (for example, gardens exclude malls, while adventure prioritizes bowling, karting, arcades, climbing, and similar activities). Search accepts free-text place and taste queries. Each card shows the mood fit, available Qloo cues, group-size guidance, and a clearly marked rough budget guide.
+Explore includes 12 Qloo-powered categories: coffee, South Indian food, global dining, bakeries, gardens, art and culture, heritage, live music, books, adventure activities, wellness, and local shopping. Category results are checked with simple local category rules so a garden page does not present a mall and an adventure page does not present a civic landmark. Search accepts free-text place and taste queries. Qloo provides location and taste matches; the interface labels practical guidance as a prompt to confirm details with the venue.
 
 ## Run locally
 
 Requires Node.js 20 or newer. No package install is needed.
 
-1. Copy `.env.example` to `.env` and add your Qloo hackathon and Gemini API keys. `GEMINI_FALLBACK_API_KEY` is optional.
+1. Copy `.env.example` to `.env` and add your Qloo API key.
 2. Run `npm start`.
 3. Open `http://localhost:4173`.
 
-The app can also be explored in demo mode without API keys. Demo mode is clearly labeled and does not claim to use live Qloo or Gemini data.
+Live recommendations require `QLOO_API_KEY`. The app does not show fabricated sample places when the key is missing or Qloo is unavailable.
 
-## API keys
+## API key
 
-Keep all keys on the server. Never put them in browser code or commit `.env` to the repository. If the primary Gemini key hits quota or fails, the day planner tries `GEMINI_FALLBACK_API_KEY`. The discovery pages require Gemini curation to keep displayed places relevant to the selected category; if curation is unavailable, the API returns an error instead of presenting a misleading mixed list.
+Keep the key on the server. Never put it in browser code or commit `.env` to the repository. Qloo requests are made by server routes only.
 
 ## Deploy on Vercel
 
-Import this repository as a project in Vercel. Add `QLOO_API_KEY` and `GEMINI_API_KEY` as encrypted environment variables for Production (and Preview if you want preview builds to use live recommendations). Optionally add a second Gemini API key from a different Google AI Studio project as `GEMINI_FALLBACK_API_KEY`. Each project’s key must be added to this Vercel project explicitly; keys in other projects are not automatically accessible. Redeploy after changing environment variables. The keys are read only by the serverless API routes.
+Import this repository as a project in Vercel and add `QLOO_API_KEY` as an encrypted environment variable for Production (and Preview if desired). Redeploy after changing the key. The key is read only by the serverless API routes.
 
 ## Stack
 
-Node.js built-in HTTP server for local development and browser-native HTML, CSS, and JavaScript. Vercel serves the static app and the `api/` serverless functions. The Qloo integration uses the Insights API (`urn:entity:place`) with a Bengaluru locality signal, optional resolved favorite entities, explainability metadata, and a lower-popularity filter for explicit hidden-gem requests. Gemini uses Google Search and Google Maps grounding so current place information and routes can be linked to their sources.
+Node.js built-in HTTP server for local development and browser-native HTML, CSS, and JavaScript. Vercel serves the static app and the `api/` serverless functions. The Qloo integration uses the Insights API (`urn:entity:place`) with Bengaluru location signals, optional resolved favorite entities, explainability metadata, and a lower-popularity filter for explicit hidden-gem requests. Mood and category signals are converted into Qloo tags; category-specific matching uses transparent local rules over Qloo's returned place names, types, and tags. Maps links open external directions; check live routes and venue details before going.
 
 ## Project status
 
-The initial interactive product and API integration scaffold are in place. Live Qloo and Gemini recommendations require valid API keys. Routing uses Google Maps grounding and directions links; confirm live traffic and transit availability in Maps. The server applies a small per-IP request limit to reduce accidental API overuse.
+The app uses Qloo for category discovery and outing recommendations. Budget, group-size, and ambience copy is presented as planning guidance and is not represented as live venue verification. The server applies a small per-IP request limit to reduce accidental API overuse.

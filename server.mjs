@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createPlan, curateDiscoveryPlaces } from './lib/planner.js';
+import { createPlan } from './lib/planner.js';
 import { DISCOVERY_CATEGORIES, qlooDiscoverPlaces } from './lib/qloo.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -63,23 +63,7 @@ async function handleDiscovery(url, res) {
       startArea: (url.searchParams.get('area') || 'Bengaluru').slice(0, 100),
       favorites: (url.searchParams.get('favorites') || '').split(',').map(value => value.trim()).filter(Boolean).slice(0, 5)
     });
-    try {
-      const curated = await curateDiscoveryPlaces({
-        category: result.category,
-        search: result.search,
-        area: (url.searchParams.get('area') || 'Bengaluru').slice(0, 100),
-        signals: result.signals,
-        places: result.places
-      });
-      return json(res, 200, { ...result, ...curated });
-    } catch (error) {
-      console.error('[discovery] Gemini curation unavailable:', error?.message || error);
-      return json(res, 200, {
-        ...result,
-        geminiCurated: false,
-        curationStatus: 'Qloo matches are shown; Gemini could not refine them right now.'
-      });
-    }
+    return json(res, 200, result);
   } catch (error) {
     console.error('[discovery] Qloo browse request failed:', error?.message || error);
     return json(res, 502, { error: 'Qloo could not return place matches right now. Please try again shortly.' });
@@ -88,7 +72,7 @@ async function handleDiscovery(url, res) {
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  if (url.pathname === '/api/health') return json(res, 200, { qloo: Boolean(process.env.QLOO_API_KEY), gemini: Boolean(process.env.GEMINI_API_KEY || process.env.GEMINI_FALLBACK_API_KEY), geminiBackup: Boolean(process.env.GEMINI_FALLBACK_API_KEY) });
+  if (url.pathname === '/api/health') return json(res, 200, { qloo: Boolean(process.env.QLOO_API_KEY) });
   if (url.pathname === '/api/discover' && req.method === 'GET') return handleDiscovery(url, res);
   if (url.pathname === '/api/plan' && req.method === 'POST') {
     if (overPlanLimit(req)) return json(res, 429, { error: 'A few plans have been requested in quick succession. Please try again in a minute.' });
