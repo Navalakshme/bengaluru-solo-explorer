@@ -39,8 +39,7 @@ async function loadDiscoveryCategories() {
 
 function priceLevel(place) {
   const value = Number(place.properties?.price_level ?? place.price_level);
-  const labels = ['Free / no charge', '₹ · Inexpensive', '₹₹ · Moderate', '₹₹₹ · Expensive', '₹₹₹₹ · Premium'];
-  return Number.isInteger(value) && value >= 0 && value < labels.length ? labels[value] : 'Not listed by Qloo · check venue';
+  return Number.isInteger(value) && value >= 1 && value <= 4 ? value : null;
 }
 
 function placeAddress(place) {
@@ -74,7 +73,11 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
   document.querySelector('#discovery-status').textContent = 'Qloo is matching places to this category and your taste cues…';
   document.querySelector('#discovery-results').innerHTML = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  const params = new URLSearchParams({ category: categoryId, area: startArea.value.trim() || 'Bengaluru' });
+  const groupType = document.querySelector('#group-type').value;
+  const budgetINR = Number(budget.value);
+  const mood = document.querySelector('#request').value.trim();
+  const params = new URLSearchParams({ category: categoryId, area: startArea.value.trim() || 'Bengaluru', groupType, budget: String(budgetINR) });
+  if (mood) params.set('mood', mood);
   if (search) params.set('search', search);
   const favoriteNames = document.querySelector('#favorites').value.split(',').map(value => value.trim()).filter(Boolean).slice(0, 5);
   if (favoriteNames.length) params.set('favorites', favoriteNames.join(','));
@@ -97,13 +100,15 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
       const address = placeAddress(place);
       const tags = (Array.isArray(place.tags) ? place.tags : []).map(tag => tag?.name).filter(Boolean).slice(0, 4);
       const map = mapsUrl({ name: place.name, address }, startArea.value.trim() || 'Bengaluru');
-      const group = category.company || 'Choose what works for your group';
-      const mood = category.mood;
+      const group = `${groupType} · confirm venue capacity and suitability`;
+      const moodLabel = mood || category.mood;
       const atmosphere = tags.length ? `${category.ambience} Qloo cues: ${tags.join(', ')}.` : category.ambience;
       const fit = explainability(place, payload.signals || []);
       const listedPrice = priceLevel(place);
-      const budgetGuide = listedPrice.startsWith('Not listed') ? category.budget : `${listedPrice} · ${category.budget}`;
-      return `<article class="discovery-card"><div class="discovery-card-top"><span class="discovery-number">${String(index + 1).padStart(2, '0')}</span><span class="discovery-category">${safe(category.name)}</span></div><h3>${safe(place.name)}</h3><p class="discovery-address">⌖ ${safe(address)}</p><p class="discovery-description">${safe(fit)}</p><div class="discovery-details"><div><span>Mood</span><strong>${safe(mood)}</strong></div><div><span>Ambience cue</span><strong>${safe(atmosphere)}</strong></div><div><span>Suggested group size</span><strong>${safe(group)}</strong></div><div><span>Budget guide</span><strong>${safe(budgetGuide)}</strong></div></div>${tags.length ? `<div class="discovery-tags">${tags.map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}<div class="discovery-card-footer"><span>Qloo cultural match${place.affinity !== undefined ? ` · ${safe(place.affinity)}` : ''}</span><a href="${map}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a></div></article>`;
+      const budgetGuide = listedPrice === null
+        ? `₹${budgetINR.toLocaleString('en-IN')} target/person · Qloo price not listed`
+        : `Qloo tier ${listedPrice}/4 · ₹${budgetINR.toLocaleString('en-IN')} target/person`;
+      return `<article class="discovery-card"><div class="discovery-card-top"><span class="discovery-number">${String(index + 1).padStart(2, '0')}</span><span class="discovery-category">${safe(category.name)}</span></div><h3>${safe(place.name)}</h3><p class="discovery-address">⌖ ${safe(address)}</p><p class="discovery-description">${safe(fit)}</p><div class="discovery-details"><div><span>Mood</span><strong>${safe(moodLabel)}</strong></div><div><span>Ambience cue</span><strong>${safe(atmosphere)}</strong></div><div><span>Your group</span><strong>${safe(group)}</strong></div><div><span>Budget preference</span><strong>${safe(budgetGuide)}</strong></div></div>${tags.length ? `<div class="discovery-tags">${tags.map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}<div class="discovery-card-footer"><span>Qloo cultural match${place.affinity !== undefined ? ` · ${safe(place.affinity)}` : ''}</span><a href="${map}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a></div></article>`;
     }).join('');
   }).catch(error => {
     if (activeDiscoveryId !== categoryId || discoverySearch !== search) return;
@@ -193,8 +198,10 @@ function renderPlan(payload) {
   const cues = [interpretation?.mood, ...(payload.qlooTasteSignals || [])].filter(Boolean);
   readback.hidden = cues.length === 0;
   readback.textContent = cues.length ? `Plan cues · ${cues.map(safe).join(' · ')}` : '';
+  const agentTrail = document.querySelector('#agent-trace');
+  agentTrail.innerHTML = (payload.agentSteps || []).map((step, index) => `<li><span>${index + 1}</span>${safe(step)}</li>`).join('');
+  agentTrail.hidden = !payload.agentSteps?.length;
   document.querySelector('#result-mode-pill').textContent = mode.toUpperCase() === 'DAY' ? 'FULL DAY' : mode.toUpperCase();
-  document.querySelector('#preview-banner').hidden = true;
   document.querySelector('#budget-note').hidden = !plan.budgetNote && !plan.travelNote;
   document.querySelector('#budget-note').textContent = [plan.budgetNote, plan.travelNote].filter(Boolean).join(' ');
   const origin = coords ? `${coords.latitude},${coords.longitude}` : startArea.value.trim();
@@ -238,7 +245,7 @@ async function createPlan(refinement = '') {
     const response = await fetch('/api/plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
     const payload = await response.json();
     if (response.ok) {
-      statusLine.textContent = `${payload.interpretation?.mood ? `Read your request as ${payload.interpretation.mood}. ` : ''}Qloo considered ${payload.qlooCount ?? payload.qlooMatchesUsed ?? 0} place matches${payload.sources?.length ? ` · ${payload.sources.length} current sources` : ''}.`;
+      statusLine.textContent = `Qloo considered ${payload.qlooCount ?? payload.qlooMatchesUsed ?? 0} place matches and shaped ${payload.qlooMatchesUsed ?? 0} stops around your preferences.`;
       renderPlan(payload, false);
     } else {
       statusLine.textContent = payload.error || 'Could not make a plan. Try again.';

@@ -60,7 +60,10 @@ async function handleDiscovery(url, res) {
     const result = await qlooDiscoverPlaces({
       categoryId: url.searchParams.get('category') || 'all',
       search: url.searchParams.get('search') || '',
+      mood: (url.searchParams.get('mood') || '').slice(0, 240),
       startArea: (url.searchParams.get('area') || 'Bengaluru').slice(0, 100),
+      groupType: (url.searchParams.get('groupType') || '').slice(0, 40),
+      budgetINR: Number(url.searchParams.get('budget') || 0),
       favorites: (url.searchParams.get('favorites') || '').split(',').map(value => value.trim()).filter(Boolean).slice(0, 5)
     });
     return json(res, 200, result);

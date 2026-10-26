@@ -10,7 +10,10 @@ export default async function handler(request, response) {
     const result = await qlooDiscoverPlaces({
       categoryId: String(request.query?.category || 'all'),
       search: String(request.query?.search || ''),
+      mood: String(request.query?.mood || '').slice(0, 240),
       startArea: String(request.query?.area || 'Bengaluru').slice(0, 100),
+      groupType: String(request.query?.groupType || '').slice(0, 40),
+      budgetINR: Number(request.query?.budget || 0),
       favorites: String(request.query?.favorites || '').split(',').map(value => value.trim()).filter(Boolean).slice(0, 5)
     });
     return response.status(200).json(result);
