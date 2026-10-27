@@ -46,7 +46,7 @@ function placeAddress(place) {
   const address = place.properties?.address || place.properties?.formatted_address || place.properties?.geocode?.address;
   if (typeof address === 'string') return address;
   if (address && typeof address === 'object') return [address.name, address.neighborhood, address.locality, address.city].filter(Boolean).join(', ');
-  return [place.properties?.geocode?.neighborhood, place.properties?.geocode?.city, 'Bengaluru'].filter(Boolean).join(', ');
+  return [place.catalog?.area || place.properties?.geocode?.neighborhood, place.properties?.geocode?.city || 'Bengaluru'].filter(Boolean).join(', ');
 }
 
 function explainability(place, signals) {
@@ -100,15 +100,19 @@ function renderDiscoveryPage(categoryId = 'all', search = '') {
       const address = placeAddress(place);
       const tags = (Array.isArray(place.tags) ? place.tags : []).map(tag => tag?.name).filter(Boolean).slice(0, 4);
       const map = mapsUrl({ name: place.name, address }, startArea.value.trim() || 'Bengaluru');
-      const group = `${groupType} · confirm venue capacity and suitability`;
-      const moodLabel = mood || category.mood;
-      const atmosphere = tags.length ? `${category.ambience} Qloo cues: ${tags.join(', ')}.` : category.ambience;
+      const group = `${place.catalog?.groupSize || groupType} · your group: ${groupType}`;
+      const moodLabel = place.catalog?.mood || mood || category.mood;
+      const atmosphere = place.catalog?.ambience || (tags.length ? `${category.ambience} Qloo cues: ${tags.join(', ')}.` : category.ambience);
       const fit = explainability(place, payload.signals || []);
       const listedPrice = priceLevel(place);
-      const budgetGuide = listedPrice === null
+      const budgetGuide = place.catalog?.pricing
+        ? `${place.catalog.pricing} · ${place.catalog.pricingNote || 'Confirm current prices.'}`
+        : listedPrice === null
         ? `₹${budgetINR.toLocaleString('en-IN')} target/person · Qloo price not listed`
         : `Qloo tier ${listedPrice}/4 · ₹${budgetINR.toLocaleString('en-IN')} target/person`;
-      return `<article class="discovery-card"><div class="discovery-card-top"><span class="discovery-number">${String(index + 1).padStart(2, '0')}</span><span class="discovery-category">${safe(category.name)}</span></div><h3>${safe(place.name)}</h3><p class="discovery-address">⌖ ${safe(address)}</p><p class="discovery-description">${safe(fit)}</p><div class="discovery-details"><div><span>Mood</span><strong>${safe(moodLabel)}</strong></div><div><span>Ambience cue</span><strong>${safe(atmosphere)}</strong></div><div><span>Your group</span><strong>${safe(group)}</strong></div><div><span>Budget preference</span><strong>${safe(budgetGuide)}</strong></div></div>${tags.length ? `<div class="discovery-tags">${tags.map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}<div class="discovery-card-footer"><span>Qloo cultural match${place.affinity !== undefined ? ` · ${safe(place.affinity)}` : ''}</span><a href="${map}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a></div></article>`;
+      const description = place.catalog?.description || fit;
+      const lookup = place.catalog?.venueLookup;
+      return `<article class="discovery-card"><div class="discovery-card-top"><span class="discovery-number">${String(index + 1).padStart(2, '0')}</span><span class="discovery-category">${safe(category.name)}</span></div><h3>${safe(place.name)}</h3><p class="discovery-address">⌖ ${safe(address)}</p><p class="discovery-description">${safe(description)}</p><div class="discovery-details"><div><span>Mood</span><strong>${safe(moodLabel)}</strong></div><div><span>Ambience cue</span><strong>${safe(atmosphere)}</strong></div><div><span>Your group</span><strong>${safe(group)}</strong></div><div><span>Budget preference</span><strong>${safe(budgetGuide)}</strong></div></div>${tags.length ? `<div class="discovery-tags">${tags.map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}<div class="discovery-card-footer"><span>Qloo cultural match${place.affinity !== undefined ? ` · ${safe(place.affinity)}` : ''}</span><span>${safe(place.catalog?.verification || 'Catalogue candidate; verify current details')}</span><a href="${map}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a>${lookup ? `<a href="${safe(lookup)}" target="_blank" rel="noopener noreferrer">Venue lookup ↗</a>` : ''}</div></article>`;
     }).join('');
   }).catch(error => {
     if (activeDiscoveryId !== categoryId || discoverySearch !== search) return;
