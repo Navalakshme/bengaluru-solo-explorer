@@ -19,6 +19,9 @@ export default async function handler(request, response) {
     return response.status(200).json(result);
   } catch (error) {
     console.error('[discovery] Qloo browse request failed:', error?.message || error);
-    return response.status(502).json({ error: 'Qloo could not return place matches right now. Please try again shortly.' });
+    const limited = error?.status === 429;
+    return response.status(limited ? 429 : 502).json({ error: limited
+      ? 'Qloo is receiving too many requests right now. Wait a moment, then try again.'
+      : 'Qloo could not return place matches right now. Please try again shortly.' });
   }
 }

@@ -69,7 +69,10 @@ async function handleDiscovery(url, res) {
     return json(res, 200, result);
   } catch (error) {
     console.error('[discovery] Qloo browse request failed:', error?.message || error);
-    return json(res, 502, { error: 'Qloo could not return place matches right now. Please try again shortly.' });
+    const limited = error?.status === 429;
+    return json(res, limited ? 429 : 502, { error: limited
+      ? 'Qloo is receiving too many requests right now. Wait a moment, then try again.'
+      : 'Qloo could not return place matches right now. Please try again shortly.' });
   }
 }
 
