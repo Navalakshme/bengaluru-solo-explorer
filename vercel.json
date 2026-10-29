@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/*.js": {
-      "includeFiles": "data/bengaluru-places.csv"
+      "includeFiles": "data/bengaluru-community-options.json"
     }
   }
 }

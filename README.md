@@ -1,33 +1,41 @@
-# Elsewhere — Bengaluru discovery
+# Common Ground — Bengaluru
 
-Elsewhere helps people explore Bengaluru alone, with friends, with family, or as a group. Qloo is the sole recommendation source. A Qloo-powered planning agent maps a person's mood, favorite entities, starting point, time, budget tier, group, and travel preference into Qloo taste signals. Qloo scores candidate venues from the local Bengaluru catalogue; matched entities are joined back to its descriptions, mood, ambience, group-size guidance, and indicative pricing. Only Qloo-recognized catalogue matches can be shown. The result includes Qloo's available cultural-fit cues.
+Common Ground helps people find local communities and activities through cultural interests they choose to share. A person can enter up to three artists, books, films, foods, or other interests, select an activity type, and add practical filters. The app resolves those interests with Qloo, asks Qloo for related cultural tags around Bengaluru, applies hard filters to a small source-linked activity directory, and ranks the eligible options using the resulting Qloo signals.
 
-Explore has 12 categories: cafés, South Indian food, global dining, bakeries, gardens, art and museums, heritage, live music, bookshops, adventure activities, wellness, and local shopping. Search accepts a place, mood, or interest. Category searches use the matching rows in the local catalogue as Qloo's candidate set. The CSV is loaded server-side and bundled with Vercel API functions; it is not exposed wholesale to the browser. If Qloo does not recognize or return a candidate, the app omits it instead of filling the list with an unrelated place.
+The first directory is intentionally small. It includes public events and organiser-led opportunities from Bengaluru organisations. Each record links to its source and includes the date checked. Event entries expire automatically using their `activeUntil` value. Prices, dates, and eligibility details that are not published by the organiser are shown as unconfirmed instead of being invented.
 
-Budget uses Qloo's relative 1–4 price tiers where the API provides them. The mapping from the per-person budget slider to a Qloo tier is approximate; displayed prices are never represented as confirmed INR totals. Group preferences are sent as Qloo taste signals when a matching tag is available, and are used to prioritize candidates only when Qloo metadata supports that match. The app asks users to verify venue capacity, suitability, prices, schedules, and live routes.
+## What the agent does
+
+1. Resolves the user's chosen interests to Qloo entities or tags.
+2. Requests related Qloo cultural tags with Bengaluru as the locality signal.
+3. Applies selected activity, budget, neighbourhood, and joining-style constraints before ranking.
+4. Returns only directory entries with a source link and explains the Qloo signal connected to each match.
+5. Sends the user to the organiser's own page to confirm details or take the next step.
+
+Qloo is used for cultural connections and ranking. It does not verify event dates, availability, accessibility, or an organisation's current intake. Those details must be checked with the linked organiser. The application does not ask for or infer health, religion, identity, or a person's reason for seeking community.
 
 ## Run locally
 
-Requires Node.js 20 or newer. No package install is needed.
+Requires Node.js 20 or newer. No package installation is needed.
 
-1. Copy `.env.example` to `.env` and add your Qloo API key.
+1. Copy `.env.example` to `.env` and add the Qloo hackathon key as `QLOO_API_KEY`.
 2. Run `npm start`.
 3. Open `http://localhost:4173`.
 
-Live recommendations require `QLOO_API_KEY`. The app does not show fabricated sample places when the key is missing or Qloo is unavailable.
-
-## API key
-
-Keep the key on the server. Never put it in browser code or commit `.env` to the repository. Qloo requests are made by server routes only.
+The Qloo key is only used by server routes. Do not place it in browser code or commit `.env`.
 
 ## Deploy on Vercel
 
-Import this repository as a project in Vercel and add `QLOO_API_KEY` as an encrypted environment variable for Production (and Preview if desired). Redeploy after changing the key. The key is read only by the serverless API routes.
+Import the public repository, add `QLOO_API_KEY` as a server-side environment variable, and redeploy. The activity directory is bundled with the function; it is not sent wholesale to the browser.
 
-## Stack and agent flow
+## Project structure
 
-Node.js built-in HTTP server for local development and browser-native HTML, CSS, and JavaScript. Vercel serves the static app and the `api/` serverless functions. The Qloo integration uses the Insights API (`urn:entity:place`), the tags lookup, and Qloo's result-entity name filters with Bengaluru location signals, optional resolved favorite entities, explainability metadata, place category filters, and restaurant price-tier filters. The agent chooses Qloo categories from the selected plan style and mood, enforces the catalogue category, scores known price and group cues, and schedules the returned results within the available time. When current coordinates are available, it sequences mapped candidates from the starting point; otherwise it leaves Qloo's match order intact. Google Maps links use the chosen travel mode for current directions.
+- `index.html`, `styles.css`, `app.js` — responsive interface, theme toggle, form and results.
+- `api/belonging.js` — serverless endpoint for the matching workflow.
+- `lib/belonging.js` — Qloo entity/tag resolution, hard filters, and deterministic ranking.
+- `data/bengaluru-community-options.json` — source-linked local activity directory.
+- `server.mjs` — local development server and matching endpoint.
 
-## Project status
+## Data maintenance
 
-The full-day planner and category discovery are Qloo-only. No model-generated venue facts, exact costs, opening hours, activity availability, or travel times are claimed. The server applies a small per-IP request limit to reduce accidental API overuse.
+Update `data/bengaluru-community-options.json` when event listings expire or an organiser changes its information. Keep the source URL and `checkedOn` date current. Use `activeUntil` for time-limited listings. Unknown prices should remain `null`; do not estimate a fee as if the organiser published it. Check the linked page before representing an opportunity as open.

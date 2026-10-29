@@ -4,123 +4,108 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#09121b">
-  <meta name="description" content="Plan a Bengaluru day around your mood, budget, taste, and company.">
-  <title>Elsewhere — Find your Bengaluru</title>
+  <meta name="description" content="Find welcoming Bengaluru communities and activities through the interests you already love.">
+  <title>Common Ground — Find your people in Bengaluru</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <script src="/app.js" defer></script>
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="#top" aria-label="Elsewhere home"><span class="brand-glyph" aria-hidden="true">✳</span><span>elsewhere<span class="brand-period">.</span></span></a>
-      <nav class="nav-links" aria-label="Main navigation"><a href="#top">Plan a day</a><a href="#explore">Explore tastes</a><a href="#about">About</a></nav>
+      <a class="brand" href="#top" aria-label="Common Ground home"><span class="brand-glyph" aria-hidden="true">✳</span><span>common ground<span class="brand-period">.</span></span></a>
+      <nav class="nav-links" aria-label="Main navigation"><a href="#find">Find a community</a><a href="#how-it-works">How matching works</a><a href="#about">About</a></nav>
       <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☼</span><span class="theme-toggle-label">Light</span></button>
-      <div class="city-pill"><span class="live-dot"></span><span>BENGALURU · ಬೆಂಗಳೂರು</span><span class="city-pill-chevron" aria-hidden="true">⌄</span></div>
+      <div class="city-pill"><span class="live-dot"></span><span>BENGALURU · ಬೆಂಗಳೂರು</span></div>
     </header>
 
     <main id="top">
-      <section class="hero-grid" aria-label="Plan a Bengaluru outing">
-        <div class="intro-copy">
-          <div class="eyebrow"><span class="eyebrow-mark">✳</span> GARDEN CITY, YOUR WAY</div>
-          <h1>Find your side<br>of <em>Bengaluru.</em></h1>
-          <p class="intro-deck">Leafy Cubbon Park afternoons, Vidhana Soudha at golden hour, a Namma Metro ride, or a BMTC food trail. Pick your mood and who’s coming along.</p>
-          <div class="local-proof"><span class="proof-dot"></span> MADE FOR THE CITY WE CALL BENGALURU</div>
+      <section class="hero-grid belonging-hero" aria-labelledby="hero-title">
+        <figure class="city-scene" aria-hidden="true"><img src="/bengaluru-city-scene.svg" alt="" width="900" height="1020"></figure>
+        <div class="intro-copy belonging-intro">
+          <div class="eyebrow"><span class="eyebrow-mark">✳</span> CONNECTION STARTS WITH WHAT YOU LOVE</div>
+          <h1 id="hero-title">Find your people.<br><em>Start with what you love.</em></h1>
+          <p class="intro-deck">A book you loved, an artist you keep coming back to, a cause you care about. Let Qloo help connect those interests to real communities and activities in Bengaluru.</p>
+          <div class="local-proof"><span class="proof-dot"></span> REAL ORGANISERS · REAL WAYS TO JOIN</div>
         </div>
 
-        <figure class="city-scene" aria-hidden="true">
-          <img src="/bengaluru-city-scene.svg" alt="" width="900" height="1020">
-        </figure>
-
-        <section class="planner" aria-labelledby="planner-title">
+        <section class="planner belonging-form-card" id="find" aria-labelledby="find-title">
           <div class="planner-head">
-            <div><span class="section-kicker">YOUR DAY, YOUR CALL</span><h2 id="planner-title">What’s your Bengaluru mood?</h2></div>
-            <div class="ai-stack" aria-label="Powered by Qloo"><span class="qloo-mark">Q</span><span class="ai-label">POWERED BY QLOO</span></div>
+            <div><span class="section-kicker">YOUR NEXT SHARED INTEREST</span><h2 id="find-title">What would you enjoy doing with others?</h2></div>
+            <div class="ai-stack" aria-label="Taste matching by Qloo"><span class="qloo-mark">Q</span><span class="ai-label">TASTE MATCH BY QLOO</span></div>
           </div>
 
-          <form id="plan-form">
-            <label class="request-label" for="request">Describe the feeling, the plan, or just a starting thought</label>
-            <div class="request-box"><span class="request-sparkle" aria-hidden="true">✦</span><textarea id="request" rows="2" placeholder="A leafy walk, really good dosa, and somewhere creative…" aria-label="Describe the Bengaluru day you want"></textarea><span class="request-hint">YOUR WORDS, YOUR PLAN</span></div>
+          <form id="belonging-form">
+            <label class="request-label" for="interest-seeds">Start with a few things you genuinely like</label>
+            <div class="request-box"><span class="request-sparkle" aria-hidden="true">✦</span><input id="interest-seeds" name="interests" autocomplete="off" placeholder="Artists, books, films, food, causes… e.g. A. R. Rahman, sketching" aria-describedby="interest-help"><span class="request-hint">UP TO 3 INTERESTS</span></div>
+            <p class="field-help belonging-help" id="interest-help">Choose interests you’re comfortable sharing. No account or personal profile needed.</p>
 
-            <div class="vibe-row" role="group" aria-label="Quick mood ideas">
-              <span class="vibe-label">Try a mood</span>
-              <button class="vibe-chip" type="button" data-vibe="A slow, peaceful day among Bengaluru’s gardens">☁ <span>Slow &amp; green</span></button>
-              <button class="vibe-chip" type="button" data-vibe="A curious day of art and local discoveries">✳ <span>Curious</span></button>
-              <button class="vibe-chip" type="button" data-vibe="A food trail with great local eats">⌁ <span>Food-led</span></button>
-              <button class="vibe-chip" type="button" data-vibe="An outdoorsy, active Bengaluru day">↗ <span>Outdoors</span></button>
-              <button class="vibe-chip" type="button" data-vibe="Surprise me with an unexpected Bengaluru plan">✦ <span>Surprise me</span></button>
+            <div class="vibe-row interest-shortcuts" role="group" aria-label="Add an interest theme">
+              <span class="vibe-label">Or start with</span>
+              <button class="vibe-chip" type="button" data-theme-shortcut="reading">▤ <span>Books</span></button>
+              <button class="vibe-chip" type="button" data-theme-shortcut="creative">▧ <span>Art</span></button>
+              <button class="vibe-chip" type="button" data-theme-shortcut="music">♫ <span>Music</span></button>
+              <button class="vibe-chip" type="button" data-theme-shortcut="nature">❋ <span>Nature</span></button>
+              <button class="vibe-chip" type="button" data-theme-shortcut="volunteer">♡ <span>Volunteering</span></button>
             </div>
 
-            <div class="quick-label-row"><span class="section-kicker">WHAT DO YOU WANT TO DO?</span><span class="optional-label">Choose a plan style</span></div>
-            <div class="mode-chips" role="group" aria-label="Choose an exploration style">
-              <button class="mode-chip selected" type="button" data-mode="day" aria-pressed="true"><span class="chip-icon">◷</span> Full day</button>
-              <button class="mode-chip" type="button" data-mode="food" aria-pressed="false"><span class="chip-icon">⌁</span> Food &amp; coffee</button>
-              <button class="mode-chip" type="button" data-mode="sights" aria-pressed="false"><span class="chip-icon">⌖</span> Places to see</button>
-              <button class="mode-chip" type="button" data-mode="adventure" aria-pressed="false"><span class="chip-icon">↗</span> Adventure</button>
+            <div class="quick-label-row"><span class="section-kicker">WHAT KIND OF CONNECTION SOUNDS GOOD?</span><span class="optional-label">Choose any</span></div>
+            <div class="belonging-themes" id="theme-options" role="group" aria-label="Activity interests">
+              <label class="theme-option"><input type="checkbox" name="themes" value="reading"><span>Read &amp; talk</span></label>
+              <label class="theme-option"><input type="checkbox" name="themes" value="creative"><span>Make something</span></label>
+              <label class="theme-option"><input type="checkbox" name="themes" value="volunteer"><span>Help out</span></label>
+              <label class="theme-option"><input type="checkbox" name="themes" value="nature"><span>Care for nature</span></label>
+              <label class="theme-option"><input type="checkbox" name="themes" value="learn"><span>Learn together</span></label>
+              <label class="theme-option"><input type="checkbox" name="themes" value="music"><span>Listen &amp; share</span></label>
+              <label class="theme-option"><input type="checkbox" name="themes" value="any"><span>Surprise me</span></label>
             </div>
 
-            <div class="form-grid">
+            <div class="form-grid belonging-filters">
               <div class="field-group location-field">
-                <label class="field-label" for="start-area">Starting area <span>OPTIONAL</span></label>
-                <div class="input-with-icon"><span class="field-icon" aria-hidden="true">⌖</span><input id="start-area" name="startArea" value="Bengaluru" placeholder="Area or landmark"><button type="button" id="use-location" class="location-button" aria-label="Use my current location" title="Use my current location"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.1"/><circle cx="10" cy="10" r="1.8"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2m13 0h2"/></svg></button></div>
-                <span id="location-status" class="field-help">Try Indiranagar, Jayanagar, or Cubbon Park</span>
+                <label class="field-label" for="start-area">Neighborhood <span>OPTIONAL</span></label>
+                <div class="input-with-icon"><span class="field-icon" aria-hidden="true">⌖</span><input id="start-area" name="area" placeholder="e.g. Indiranagar"></div>
+                <span class="field-help">Leave blank to see Bengaluru-wide options</span>
               </div>
-              <div class="field-group budget-field">
-                <div class="field-label-row"><label class="field-label" for="budget">Budget <span>PER PERSON</span></label><output id="budget-value" for="budget">₹1,500</output></div>
-                <input id="budget" class="range-input" type="range" min="300" max="5000" step="100" value="1500" aria-label="Budget per person">
-                <div class="range-captions"><span>₹300</span><span>₹5,000+</span></div>
+              <div class="field-group">
+                <label class="field-label" for="budget-filter">Activity cost <span>OPTIONAL</span></label>
+                <div class="select-wrap"><select id="budget-filter" name="budget"><option value="any">Any / not listed</option><option value="free">Free only</option><option value="500">Up to ₹500</option><option value="2000">Up to ₹2,000</option></select><span class="select-chevron" aria-hidden="true">⌄</span></div>
               </div>
-              <div class="field-group time-field">
-                <label class="field-label" for="duration">Time you have</label>
-                <div class="select-wrap"><select id="duration" name="duration"><option value="2">A couple of hours</option><option value="4">Half a day</option><option value="8" selected>Most of the day</option><option value="12">The whole day</option></select><span class="select-chevron" aria-hidden="true">⌄</span></div>
-              </div>
-              <div class="field-group travel-field">
-                <label class="field-label" for="transport">Getting around</label>
-                <div class="select-wrap"><select id="transport" name="transport"><option value="any">Whatever works</option><option value="public">Namma Metro &amp; BMTC</option><option value="auto">Auto-rickshaw</option><option value="cab">Cab</option><option value="walk">Walking</option></select><span class="select-chevron" aria-hidden="true">⌄</span></div>
-              </div>
-              <div class="field-group group-field">
-                <label class="field-label" for="group-type">Who’s coming?</label>
-                <div class="select-wrap"><select id="group-type" name="groupType"><option value="just me">Just me</option><option value="friends">Friends</option><option value="family">Family</option><option value="a date">A date</option><option value="a group">A group</option></select><span class="select-chevron" aria-hidden="true">⌄</span></div>
+              <div class="field-group">
+                <label class="field-label" for="join-style">Joining style <span>OPTIONAL</span></label>
+                <div class="select-wrap"><select id="join-style" name="joinStyle"><option value="any">Any format</option><option value="beginner">Beginner-friendly</option><option value="drop-in">Drop in / one-time</option><option value="ongoing">Ongoing community</option></select><span class="select-chevron" aria-hidden="true">⌄</span></div>
               </div>
             </div>
 
-            <details class="taste-details"><summary><span class="taste-symbol">✦</span><span>Add things you love</span><span class="taste-optional">OPTIONAL</span><span class="summary-chevron" aria-hidden="true">⌄</span></summary><div class="taste-content"><label class="field-label" for="favorites">Favorite foods, artists, films, or places</label><input id="favorites" placeholder="e.g. filter coffee, indie music, Cubbon Park"><p>Qloo can use these as taste signals. Leave blank to start with your mood.</p></div></details>
-
-            <div class="submit-row"><div class="privacy-note"><span class="lock-icon" aria-hidden="true">⌑</span> Your location is used to find nearby places and shape this plan.</div><button class="plan-button" id="plan-button" type="submit"><span class="button-star" aria-hidden="true">✦</span><span>Find my Bengaluru day</span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
-            <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+            <div class="submit-row"><p class="privacy-note"><span class="lock-icon" aria-hidden="true">⌑</span> Your selected interests go to Qloo for matching. This app doesn’t create an account or save your form.</p><button class="plan-button" id="match-button" type="submit"><span class="button-star" aria-hidden="true">✦</span><span>Find my kind of community</span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
+            <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
           </form>
         </section>
       </section>
 
-      <section id="explore" class="discover-section" aria-labelledby="discover-title">
-        <div class="discover-heading"><div><span class="section-kicker">A CITY FULL OF DIFFERENT MOODS</span><h2 id="discover-title">Find places that feel <em>like you.</em></h2><p>Browse Qloo-powered Bengaluru picks by the kind of day you want, or search for something specific.</p></div><span class="discover-mark" aria-hidden="true">✳</span></div>
-        <form id="discovery-search" class="discovery-search"><label class="visually-hidden" for="discovery-query">Search places, food, moods, or interests</label><span aria-hidden="true">⌕</span><input id="discovery-query" type="search" placeholder="Try filter coffee, quiet gardens, live jazz, bookstores…"><button type="submit">Search Bengaluru <span aria-hidden="true">↗</span></button></form>
-        <div id="category-grid" class="category-grid" aria-live="polite"><p class="discover-loading">Finding your starting points…</p></div>
+      <section class="how-section belonging-how" id="how-it-works" aria-labelledby="how-title">
+        <div class="how-heading"><span class="section-kicker">A BETTER WAY TO FIND YOUR WAY IN</span><h2 id="how-title">From an interest you know<br>to a community you <em>haven’t met yet.</em></h2></div>
+        <div class="how-grid">
+          <article><span class="how-number">01 / YOUR CHOICE</span><h3>Share a few interests</h3><p>Choose a book, artist, film, or cause. We only use what you choose to share for this search.</p></article>
+          <article><span class="how-number">02 / QLOO CONNECTS THE DOTS</span><h3>See the cultural link</h3><p>Qloo finds related taste signals across cultural categories. The app uses those signals to rank matching local activities.</p></article>
+          <article><span class="how-number">03 / A REAL NEXT STEP</span><h3>Meet a real organiser</h3><p>Recommendations come from public organiser pages. Check the source and contact the organiser before you go.</p></article>
+        </div>
       </section>
 
-      <section id="discover-page" class="discover-page" hidden aria-live="polite">
-        <button type="button" class="back-to-discover" id="back-to-discover">← All tastes</button>
-        <div class="discover-heading page-heading"><div><span class="section-kicker" id="discovery-eyebrow">QLOO PLACE MATCHES · BENGALURU</span><h2 id="discovery-page-title">Places for your kind of day.</h2><p id="discovery-page-intro"></p></div><span class="discover-mark" id="discovery-page-icon" aria-hidden="true">✳</span></div>
-        <form id="discovery-search-page" class="discovery-search"><label class="visually-hidden" for="discovery-query-page">Search places, food, moods, or interests</label><span aria-hidden="true">⌕</span><input id="discovery-query-page" type="search" placeholder="Search another place, mood, food, or interest…"><button type="submit">Search <span aria-hidden="true">↗</span></button></form>
-        <p id="discovery-status" class="discovery-status" role="status" aria-live="polite"></p>
-        <div id="discovery-results" class="discovery-results"></div>
+      <section class="results-section community-results" id="results" hidden aria-live="polite" aria-labelledby="results-title">
+        <div class="results-topline"><div><span class="section-kicker">YOUR BENGALURU, CONNECTED</span><h2 id="results-title">A few ways to find common ground.</h2></div><span class="result-mode-pill" id="result-count">QLOO MATCHES</span></div>
+        <p class="results-summary" id="results-summary"></p>
+        <div class="qloo-signals" id="qloo-signals" hidden></div>
+        <div class="community-grid" id="community-results"></div>
+        <p class="comfort-note"><span aria-hidden="true">✳</span> Activities and availability can change. Use the organiser’s own page to confirm dates, cost, suitability, and access details.</p>
       </section>
 
-      <section class="results-section" id="results" hidden aria-live="polite">
-        <div class="results-topline"><div><span class="section-kicker">YOUR BENGALURU, CURATED</span><h2 id="results-title">A day that feels like yours.</h2></div><span class="result-mode-pill" id="result-mode-pill">FULL DAY</span></div>
-        <p id="results-summary" class="results-summary"></p>
-        <p id="mood-readback" class="mood-readback" hidden></p>
-        <ol id="agent-trace" class="agent-trace" hidden aria-label="How Qloo shaped this plan"></ol>
-        <div id="itinerary" class="itinerary"></div>
-        <div class="sources-row" id="sources-row" hidden><span>GOOGLE MAPS &amp; WEB SOURCES</span><div id="sources-list"></div></div>
-        <div id="budget-note" class="budget-note" hidden></div>
-        <div class="refine-card"><div class="refine-icon" aria-hidden="true">↻</div><div class="refine-copy"><strong>Want to shape it a little?</strong><span>Ask for a closer, calmer, cheaper, or more adventurous plan.</span></div><form id="refine-form" class="refine-form"><label class="visually-hidden" for="refine-input">Refine the plan</label><input id="refine-input" placeholder="Closer, less busy, more adventurous…"><button type="submit" aria-label="Update plan">↗</button></form></div>
-        <p class="comfort-note"><span aria-hidden="true">✳</span> Qloo provides the taste matches. Confirm current prices, opening hours, activity availability, and routes before you go.</p>
+      <section class="source-note" id="about">
+        <span class="section-kicker">BUILT FOR REAL CONNECTION</span>
+        <p>Common Ground uses Qloo for taste connections and a small, source-linked Bengaluru directory for real activities. It does not infer personality, health, religion, or social needs. The organiser remains the source of truth.</p>
       </section>
-
-      <footer id="about" class="footer"><a class="brand footer-brand" href="#top"><span class="brand-glyph" aria-hidden="true">✳</span><span>elsewhere<span class="brand-period">.</span></span></a><span>Find a little more of what you love.</span><span class="footer-city">BENGALURU · ಬೆಂಗಳೂರು</span></footer>
+      <footer class="footer"><a class="brand footer-brand" href="#top"><span class="brand-glyph" aria-hidden="true">✳</span><span>common ground<span class="brand-period">.</span></span></a><span>Find a shared interest. Take a first step.</span><span class="footer-city">BENGALURU · ಬೆಂಗಳೂರು</span></footer>
     </main>
   </div>
 </body>
