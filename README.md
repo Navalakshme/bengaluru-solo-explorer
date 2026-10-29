@@ -2,14 +2,14 @@
 
 Common Ground helps people find local communities and activities through cultural interests they choose to share. A person can enter up to three artists, books, films, foods, or other interests, select an activity type, and add practical filters. The app resolves those interests with Qloo, asks Qloo for related cultural tags around Bengaluru, applies hard filters to a small source-linked activity directory, and ranks the eligible options using the resulting Qloo signals.
 
-The first directory is intentionally small. It includes public events and organiser-led opportunities from Bengaluru organisations. Each record links to its source and includes the date checked. Event entries expire automatically using their `activeUntil` value. Prices, dates, and eligibility details that are not published by the organiser are shown as unconfirmed instead of being invented.
+The directory contains 31 source-linked public events and organiser-led opportunities across books, creative activities, music, nature, volunteering, and learning. Each record links to its source and includes the date checked. Event entries expire automatically using their `activeUntil` value. Prices, dates, and eligibility details that are not published by the organiser are shown as unconfirmed instead of being invented.
 
 ## What the agent does
 
 1. Resolves the user's chosen interests to Qloo entities or tags.
 2. Requests related Qloo cultural tags with Bengaluru as the locality signal.
 3. Applies selected activity, budget, neighbourhood, and joining-style constraints before ranking.
-4. Returns only directory entries with a source link and explains the Qloo signal connected to each match.
+4. Returns up to 30 directory entries with a source link. Qloo-ranked matches appear first; when there is no clear cultural link, eligible listings are still shown with that distinction explained.
 5. Sends the user to the organiser's own page to confirm details or take the next step.
 
 Qloo is used for cultural connections and ranking. It does not verify event dates, availability, accessibility, or an organisation's current intake. Those details must be checked with the linked organiser. The application does not ask for or infer health, religion, identity, or a person's reason for seeking community.
