@@ -1,10 +1,17 @@
 # Common Ground — Bengaluru
 
-Common Ground helps people find local communities and activities through cultural interests they choose to share. A person can enter up to three artists, books, films, foods, or other interests, select an activity type, and add practical filters. The app resolves those interests with Qloo, asks Qloo for related cultural tags around Bengaluru, applies hard filters to a small source-linked activity directory, and ranks the eligible options using the resulting Qloo signals.
+Common Ground has two discovery modes for Bengaluru. **Food places** sends cuisine or food interests such as “Korean food” to Qloo's place recommendations and returns matching restaurant and venue entities, with Qloo price level and neighbourhood filters. **People & activities** uses Qloo cultural signals to rank source-linked local community listings against the interests and activity filters a person chooses.
 
 The directory contains 31 source-linked public events and organiser-led opportunities across books, creative activities, music, nature, volunteering, and learning. Each record links to its source and includes the date checked. Event entries expire automatically using their `activeUntil` value. Prices, dates, and eligibility details that are not published by the organiser are shown as unconfirmed instead of being invented.
 
-## What the agent does
+## What the food-place finder does
+
+1. Resolves known cuisine searches to restaurant cuisine tags where Qloo provides them.
+2. Requests Qloo place entities in Bengaluru (or the neighbourhood entered) and uses the cuisine as a taste signal.
+3. Applies the selected Qloo price-level limit and returns place details, tags, and links where Qloo provides them.
+4. Offers a Google Maps search for each place. Confirm menus, opening hours, prices, and availability with the venue.
+
+## What the community finder does
 
 1. Resolves the user's chosen interests to Qloo entities or tags.
 2. Requests related Qloo cultural tags with Bengaluru as the locality signal.
@@ -32,7 +39,7 @@ Import the public repository, add `QLOO_API_KEY` as a server-side environment va
 
 - `index.html`, `styles.css`, `app.js` — responsive interface, theme toggle, form and results.
 - `api/belonging.js` — serverless endpoint for the matching workflow.
-- `lib/belonging.js` — Qloo entity/tag resolution, hard filters, and deterministic ranking.
+- `lib/belonging.js` — Qloo place search, entity/tag resolution, hard filters, and community ranking.
 - `data/bengaluru-community-options.json` — source-linked local activity directory.
 - `server.mjs` — local development server and matching endpoint.
 

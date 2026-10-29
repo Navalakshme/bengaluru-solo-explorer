@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getBelongingMatches } from './lib/belonging.js';
+import { getBelongingMatches, getPlaceMatches } from './lib/belonging.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 loadEnv(path.join(ROOT, '.env'));
@@ -47,13 +47,16 @@ async function readBody(req) {
 
 async function handleBelonging(req, res) {
   const input = await readBody(req);
-  const result = await getBelongingMatches({
+  const normalizedInput = {
     interests: Array.isArray(input.interests) ? input.interests.slice(0, 3) : [],
     themes: Array.isArray(input.themes) ? input.themes : [],
     area: String(input.area || '').slice(0, 100),
     budget: String(input.budget || 'any'),
     joinStyle: String(input.joinStyle || 'any')
-  });
+  };
+  const result = input.mode === 'places'
+    ? await getPlaceMatches(normalizedInput)
+    : await getBelongingMatches(normalizedInput);
   json(res, 200, result);
 }
 
@@ -61,7 +64,7 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   if (url.pathname === '/api/health') return json(res, 200, { qloo: Boolean(process.env.QLOO_API_KEY) });
   if (url.pathname === '/api/belonging') {
-    if (req.method !== 'POST') return json(res, 405, { error: 'Use POST to request community matches.' });
+    if (req.method !== 'POST') return json(res, 405, { error: 'Use POST to request recommendations.' });
     if (overMatchLimit(req)) return json(res, 429, { error: 'A few matches have been requested in quick succession. Please try again in a minute.' });
     try { return await handleBelonging(req, res); }
     catch (error) {

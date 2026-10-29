@@ -5,6 +5,14 @@ const results = document.querySelector('#results');
 const resultsGrid = document.querySelector('#community-results');
 const interestInput = document.querySelector('#interest-seeds');
 const themeToggle = document.querySelector('#theme-toggle');
+const modeInputs = [...document.querySelectorAll('input[name="mode"]')];
+const budgetSelect = document.querySelector('#budget-filter');
+const communityBudgetOptions = [
+  ['any', 'Any / not listed'], ['free', 'Free only'], ['500', 'Up to ₹500'], ['2000', 'Up to ₹2,000']
+];
+const placeBudgetOptions = [
+  ['any', 'Any price level'], ['1', 'Level 1 · lower'], ['2', 'Level 2'], ['3', 'Level 3'], ['4', 'Level 4 · higher']
+];
 
 function safe(value) {
   return String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -29,6 +37,36 @@ themeToggle.addEventListener('click', () => {
   const nextTheme = document.body.dataset.theme === 'light' ? 'dark' : 'light';
   setTheme(nextTheme);
   try { localStorage.setItem('elsewhere-theme', nextTheme); } catch {}
+});
+
+function currentMode() {
+  return modeInputs.find(input => input.checked)?.value || 'places';
+}
+
+function updateMode() {
+  const places = currentMode() === 'places';
+  document.body.dataset.discoveryMode = places ? 'places' : 'community';
+  document.querySelectorAll('.community-only').forEach(element => { element.hidden = places; });
+  document.querySelectorAll('.place-only').forEach(element => { element.hidden = !places; });
+  document.querySelector('#budget-label').textContent = places ? 'Qloo price level' : 'Activity cost';
+  budgetSelect.innerHTML = (places ? placeBudgetOptions : communityBudgetOptions)
+    .map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
+  document.querySelector('#submit-label').textContent = places ? 'Find places for me' : 'Find my kind of community';
+  document.querySelector('#results-title').textContent = places ? 'Places that fit your taste.' : 'A few ways to find common ground.';
+  document.querySelector('#results-note').innerHTML = places
+    ? '<span aria-hidden="true">✳</span> Qloo place details, menus, opening hours, prices, and availability can change. Confirm with the venue before you go.'
+    : '<span aria-hidden="true">✳</span> Activities and availability can change. Use the organiser’s own page to confirm dates, cost, suitability, and access details.';
+}
+
+modeInputs.forEach(input => input.addEventListener('change', updateMode));
+updateMode();
+
+document.querySelectorAll('[data-place-shortcut]').forEach(button => {
+  button.addEventListener('click', () => {
+    interestInput.value = button.dataset.placeShortcut;
+    document.querySelectorAll('[data-place-shortcut]').forEach(item => item.classList.toggle('is-used', item === button));
+    interestInput.focus();
+  });
 });
 
 document.querySelectorAll('[data-theme-shortcut]').forEach(button => {
@@ -69,7 +107,53 @@ function qlooSignalSummary(signals) {
     : '';
 }
 
+function safeUrl(value) {
+  try {
+    const url = new URL(String(value || ''));
+    return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+  } catch { return ''; }
+}
+
+function renderPlaces(payload) {
+  const places = Array.isArray(payload.options) ? payload.options : [];
+  document.querySelector('#result-count').textContent = `${places.length} ${places.length === 1 ? 'PLACE' : 'PLACES'}`;
+  document.querySelector('#results-summary').textContent = places.length
+    ? `Qloo matched your taste signals to ${places.length} Bengaluru ${places.length === 1 ? 'place' : 'places'}. Use each venue’s own details to confirm menus, opening hours, prices, and availability.`
+    : payload.message || 'Qloo did not return a close place match. Try a cuisine, dish, or neighbourhood.';
+  qlooSignalSummary(payload.signals);
+
+  if (!places.length) {
+    resultsGrid.innerHTML = `<div class="discover-empty"><strong>No close place matches yet.</strong><span>${safe(payload.message || 'Try another cuisine, dish, or neighbourhood.')}</span></div>`;
+    return;
+  }
+
+  resultsGrid.innerHTML = places.map((place, index) => {
+    const tags = Array.isArray(place.tags) ? place.tags : [];
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([place.name, place.address, place.area].filter(Boolean).join(', '))}`;
+    const website = safeUrl(place.website);
+    const image = safeUrl(place.image);
+    const facts = [
+      place.address ? `<div><dt>Address</dt><dd>${safe(place.address)}</dd></div>` : '',
+      place.area ? `<div><dt>Area</dt><dd>${safe(place.area)}</dd></div>` : '',
+      place.priceLevel ? `<div><dt>Qloo price</dt><dd>Level ${safe(place.priceLevel)} of 4 · relative price tier</dd></div>` : '',
+      place.rating ? `<div><dt>Rating</dt><dd>${safe(place.rating)}${place.ratingCount ? ` (${safe(place.ratingCount)} ratings)` : ''}</dd></div>` : ''
+    ].filter(Boolean).join('');
+    return `
+      <article class="community-card place-card">
+        ${image ? `<img class="place-image" src="${safe(image)}" alt="" loading="lazy">` : ''}
+        <div class="community-card-top"><span class="community-number">${String(index + 1).padStart(2, '0')}</span><span class="community-kind">Qloo place match</span></div>
+        <h3>${safe(place.name)}</h3>
+        ${tags.length ? `<div class="place-tags">${tags.slice(0, 5).map(tag => `<span>${safe(tag)}</span>`).join('')}</div>` : ''}
+        <p class="community-description">${safe(place.description || 'A Qloo-recommended place in Bengaluru. Check the venue’s own listing for current menu and visit details.')}</p>
+        <p class="community-qloo"><span aria-hidden="true">✳</span> ${safe(place.qlooReason || 'Recommended by Qloo from your selected tastes and Bengaluru location.')}</p>
+        ${facts ? `<dl class="community-details">${facts}</dl>` : ''}
+        <div class="community-footer"><a href="${safe(mapsUrl)}" target="_blank" rel="noopener noreferrer">Open in Maps ↗</a>${website ? `<a class="community-join" href="${safe(website)}" target="_blank" rel="noopener noreferrer">Venue details ↗</a>` : ''}</div>
+      </article>`;
+  }).join('');
+}
+
 function renderOptions(payload) {
+  if (payload.mode === 'places') return renderPlaces(payload);
   const options = Array.isArray(payload.options) ? payload.options : [];
   document.querySelector('#result-count').textContent = `${options.length} ${options.length === 1 ? 'MATCH' : 'MATCHES'}`;
   document.querySelector('#results-summary').textContent = options.length
@@ -103,22 +187,24 @@ function renderOptions(payload) {
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
+  const mode = currentMode();
   const interests = selectedInterests();
   const themes = [...document.querySelectorAll('input[name="themes"]:checked')].map(input => input.value);
-  if (!interests.length && !themes.length) {
-    statusLine.textContent = 'Add an interest or choose an activity type to begin.';
+  if (!interests.length && (mode === 'places' || !themes.length)) {
+    statusLine.textContent = mode === 'places' ? 'Enter a cuisine, dish, or other taste to find places.' : 'Add an interest or choose an activity type to begin.';
     interestInput.focus();
     return;
   }
 
   const payload = {
+    mode,
     interests,
     themes,
     area: document.querySelector('#start-area').value.trim(),
     budget: document.querySelector('#budget-filter').value,
     joinStyle: document.querySelector('#join-style').value
   };
-  statusLine.textContent = 'Connecting your interests to Bengaluru activities with Qloo…';
+  statusLine.textContent = mode === 'places' ? 'Finding Bengaluru places with Qloo…' : 'Connecting your interests to Bengaluru activities with Qloo…';
   statusLine.classList.add('loading-dots');
   matchButton.disabled = true;
   matchButton.setAttribute('aria-busy', 'true');
@@ -132,7 +218,9 @@ form.addEventListener('submit', async event => {
     if (!response.ok) throw new Error(result.error || 'Could not match activities right now.');
     renderOptions(result);
     statusLine.textContent = result.options.length
-      ? result.matchMode === 'qloo'
+      ? result.mode === 'places'
+        ? `Qloo found ${result.options.length} Bengaluru places for your taste.`
+        : result.matchMode === 'qloo'
         ? `Qloo connected your interests to ${result.options.length} checked activities.`
         : `Showing ${result.options.length} checked activities that match your filters.`
       : result.message;
