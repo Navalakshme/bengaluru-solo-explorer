@@ -73,7 +73,9 @@ function renderOptions(payload) {
   const options = Array.isArray(payload.options) ? payload.options : [];
   document.querySelector('#result-count').textContent = `${options.length} ${options.length === 1 ? 'MATCH' : 'MATCHES'}`;
   document.querySelector('#results-summary').textContent = options.length
-    ? `${options.length} public ${options.length === 1 ? 'way' : 'ways'} to connect, ranked using Qloo’s cultural signals and filtered by the choices you made. We show only activities with a checked organiser source.`
+    ? payload.matchMode === 'qloo'
+      ? `${options.length} public ${options.length === 1 ? 'way' : 'ways'} to connect, ranked using Qloo’s cultural signals and filtered by the choices you made. We show only activities with a checked organiser source.`
+      : payload.message || `${options.length} source-checked activities match your filters. Qloo did not find a clear cultural link for this search.`
     : payload.message || 'There are no checked options matching this combination yet.';
   qlooSignalSummary(payload.signals);
 
@@ -130,7 +132,9 @@ form.addEventListener('submit', async event => {
     if (!response.ok) throw new Error(result.error || 'Could not match activities right now.');
     renderOptions(result);
     statusLine.textContent = result.options.length
-      ? `Qloo connected your interests to ${result.options.length} checked activities.`
+      ? result.matchMode === 'qloo'
+        ? `Qloo connected your interests to ${result.options.length} checked activities.`
+        : `Showing ${result.options.length} checked activities that match your filters.`
       : result.message;
     results.hidden = false;
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
