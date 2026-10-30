@@ -42,7 +42,7 @@
               <label class="mode-option"><input type="radio" name="mode" value="places" checked><span><strong>Food places</strong><small>Restaurants, cafés, and cuisines</small></span></label>
               <label class="mode-option"><input type="radio" name="mode" value="community"><span><strong>People &amp; activities</strong><small>Local groups and ways to join</small></span></label>
             </fieldset>
-            <label class="request-label" for="interest-seeds">What tastes or interests should Qloo use?</label>
+            <label class="request-label" id="interest-label" for="interest-seeds">What food or taste should Qloo look for?</label>
             <div class="request-box"><span class="request-sparkle" aria-hidden="true">✦</span><input id="interest-seeds" name="interests" autocomplete="off" placeholder="Korean food, cozy cafés, dosa…" aria-describedby="interest-help"><span class="request-hint">UP TO 3 INTERESTS</span></div>
             <p class="field-help belonging-help" id="interest-help">Search any cuisine, dish, café style, or food preference—like biryani, ramen, vegan food, or desserts. Qloo uses your words for this search; no account or personal profile needed.</p>
 
@@ -115,6 +115,7 @@
       <section class="source-note" id="about">
         <span class="section-kicker">BUILT FOR REAL CONNECTION</span>
         <p>Common Ground uses Qloo taste signals to recommend Bengaluru places and to rank a source-linked directory of local communities and activities. Place details and organiser information can change; confirm directly before visiting.</p>
+        <div class="agent-tools"><div><h3>Connect an AI agent</h3><p>These Qloo-backed tools let an MCP-compatible agent find Bengaluru food places or connect cultural interests to checked local activities.</p><code id="mcp-endpoint">https://bengaluru-solo-explorer.vercel.app/api/mcp</code><ul><li><code>find_bengaluru_food_places</code> — cuisine, dish, or food preference</li><li><code>connect_taste_to_activities</code> — cultural taste to source-linked activity</li></ul></div><button id="copy-mcp" type="button">Copy MCP endpoint</button></div>
       </section>
       <footer class="footer"><a class="brand footer-brand" href="#top"><span class="brand-glyph" aria-hidden="true">✳</span><span>common ground<span class="brand-period">.</span></span></a><span>Find a shared interest. Take a first step.</span><span class="footer-city">BENGALURU · ಬೆಂಗಳೂರು</span></footer>
     </main>

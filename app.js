@@ -49,6 +49,11 @@ function updateMode() {
   document.querySelectorAll('.community-only').forEach(element => { element.hidden = places; });
   document.querySelectorAll('.place-only').forEach(element => { element.hidden = !places; });
   document.querySelector('#budget-label').textContent = places ? 'Qloo price level' : 'Activity cost';
+  document.querySelector('#interest-label').textContent = places ? 'What food or taste should Qloo look for?' : 'What cultural interests should Qloo connect?';
+  interestInput.placeholder = places ? 'Korean food, cozy cafés, dosa…' : 'A book, film, artist, or cause…';
+  document.querySelector('#interest-help').textContent = places
+    ? 'Search any cuisine, dish, café style, or food preference—like biryani, ramen, vegan food, or desserts. Qloo uses your words for this search; no account or personal profile needed.'
+    : 'Enter up to three cultural interests—such as a book, film, musician, or cause. Qloo connects them to Bengaluru activity listings only when a direct taste link is found.';
   budgetSelect.innerHTML = (places ? placeBudgetOptions : communityBudgetOptions)
     .map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
   document.querySelector('#submit-label').textContent = places ? 'Find places for me' : 'Find my kind of community';
@@ -159,7 +164,7 @@ function renderOptions(payload) {
   document.querySelector('#results-summary').textContent = options.length
     ? payload.matchMode === 'qloo'
       ? `${options.length} public ${options.length === 1 ? 'way' : 'ways'} to connect, ranked using Qloo’s cultural signals and filtered by the choices you made. We show only activities with a checked organiser source.`
-      : payload.message || `${options.length} source-checked activities match your filters. Qloo did not find a clear cultural link for this search.`
+      : payload.message || `${options.length} source-checked activities match your filters.`
     : payload.message || 'There are no checked options matching this combination yet.';
   qlooSignalSummary(payload.signals);
 
@@ -220,9 +225,7 @@ form.addEventListener('submit', async event => {
     statusLine.textContent = result.options.length
       ? result.mode === 'places'
         ? `Qloo found ${result.options.length} Bengaluru places for your taste.`
-        : result.matchMode === 'qloo'
-        ? `Qloo connected your interests to ${result.options.length} checked activities.`
-        : `Showing ${result.options.length} checked activities that match your filters.`
+        : `Qloo connected your interests to ${result.options.length} checked activities.`
       : result.message;
     results.hidden = false;
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -232,5 +235,16 @@ form.addEventListener('submit', async event => {
     statusLine.classList.remove('loading-dots');
     matchButton.disabled = false;
     matchButton.removeAttribute('aria-busy');
+  }
+});
+
+document.querySelector('#copy-mcp').addEventListener('click', async event => {
+  const endpoint = `${location.origin}/api/mcp`;
+  try {
+    await navigator.clipboard.writeText(endpoint);
+    event.currentTarget.textContent = 'Copied';
+    window.setTimeout(() => { event.currentTarget.textContent = 'Copy MCP endpoint'; }, 1800);
+  } catch {
+    event.currentTarget.textContent = endpoint;
   }
 });

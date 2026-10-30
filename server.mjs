@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getBelongingMatches, getPlaceMatches } from './lib/belonging.js';
+import { handleMcpRequest } from './lib/mcp.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 loadEnv(path.join(ROOT, '.env'));
@@ -63,6 +64,16 @@ async function handleBelonging(req, res) {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   if (url.pathname === '/api/health') return json(res, 200, { qloo: Boolean(process.env.QLOO_API_KEY) });
+  if (url.pathname === '/api/mcp') {
+    try {
+      const body = req.method === 'OPTIONS' ? {} : await readBody(req);
+      const result = await handleMcpRequest({ method: req.method, headers: req.headers, body, ip: req.socket.remoteAddress || 'local' });
+      res.writeHead(result.status, result.headers);
+      return res.end(result.body === null ? '' : JSON.stringify(result.body));
+    } catch (error) {
+      return json(res, 400, { error: error?.message || 'Invalid MCP request.' });
+    }
+  }
   if (url.pathname === '/api/belonging') {
     if (req.method !== 'POST') return json(res, 405, { error: 'Use POST to request recommendations.' });
     if (overMatchLimit(req)) return json(res, 429, { error: 'A few matches have been requested in quick succession. Please try again in a minute.' });

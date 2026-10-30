@@ -16,7 +16,7 @@ The directory contains 31 source-linked public events and organiser-led opportun
 1. Resolves the user's chosen interests to Qloo entities or tags.
 2. Requests related Qloo cultural tags with Bengaluru as the locality signal.
 3. Applies selected activity, budget, neighbourhood, and joining-style constraints before ranking.
-4. Returns up to 30 directory entries with a source link. Qloo-ranked matches appear first; when there is no clear cultural link, eligible listings are still shown with that distinction explained.
+4. Returns up to 30 directory entries with a source link only when a direct cultural bridge to a Qloo tag is found. If no direct bridge exists, it returns no recommendations and explains how to broaden the search.
 5. Sends the user to the organiser's own page to confirm details or take the next step.
 
 Qloo is used for cultural connections and ranking. It does not verify event dates, availability, accessibility, or an organisation's current intake. Those details must be checked with the linked organiser. The application does not ask for or infer health, religion, identity, or a person's reason for seeking community.
@@ -31,6 +31,15 @@ Requires Node.js 20 or newer. No package installation is needed.
 
 The Qloo key is only used by server routes. Do not place it in browser code or commit `.env`.
 
+## MCP agent tools
+
+The hosted service exposes a Streamable HTTP MCP endpoint at `/api/mcp` (production: `https://bengaluru-solo-explorer.vercel.app/api/mcp`). An MCP-compatible agent can discover and call these tools:
+
+- `find_bengaluru_food_places`: query Qloo for cuisine-, dish-, and preference-matched Bengaluru food venues, with optional area and Qloo price tier.
+- `connect_taste_to_activities`: connect up to three cultural interests to checked Bengaluru community listings, with optional themes, area, cost, and joining-style filters. It returns only listings with a direct Qloo cultural bridge.
+
+The endpoint supports the current `2026-07-28` MCP protocol and the previous initialize-based protocol revisions listed in `lib/mcp.js`. Qloo credentials remain server-side. The tools return an explicit empty result when Qloo does not establish a relevant match; they do not relabel directory fallback results as Qloo recommendations.
+
 ## Deploy on Vercel
 
 Import the public repository, add `QLOO_API_KEY` as a server-side environment variable, and redeploy. The activity directory is bundled with the function; it is not sent wholesale to the browser.
@@ -39,6 +48,7 @@ Import the public repository, add `QLOO_API_KEY` as a server-side environment va
 
 - `index.html`, `styles.css`, `app.js` — responsive interface, theme toggle, form and results.
 - `api/belonging.js` — serverless endpoint for the matching workflow.
+- `api/mcp.js`, `lib/mcp.js` — Streamable HTTP MCP discovery and tool-call endpoint.
 - `lib/belonging.js` — Qloo place search, entity/tag resolution, hard filters, and community ranking.
 - `data/bengaluru-community-options.json` — source-linked local activity directory.
 - `server.mjs` — local development server and matching endpoint.
