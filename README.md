@@ -6,7 +6,7 @@ The directory contains 31 source-linked public events and organiser-led opportun
 
 ## What the food-place finder does
 
-1. Resolves known cuisine searches to restaurant cuisine tags where Qloo provides them.
+1. Resolves known cuisines to restaurant cuisine tags and sends other entered food, dish, café, or cuisine terms to Qloo's tag search.
 2. Requests Qloo place entities in Bengaluru (or the neighbourhood entered) and uses the cuisine as a taste signal.
 3. Applies the selected Qloo price-level limit and returns place details, tags, and links where Qloo provides them.
 4. Offers a Google Maps search for each place. Confirm menus, opening hours, prices, and availability with the venue.
