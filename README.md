@@ -16,7 +16,7 @@ The directory contains 31 source-linked public events and organiser-led opportun
 1. Resolves the user's chosen interests to Qloo entities or tags.
 2. Requests related Qloo cultural tags with Bengaluru as the locality signal.
 3. Applies selected activity, budget, neighbourhood, and joining-style constraints before ranking.
-4. Returns up to 30 directory entries with a source link only when a direct cultural bridge to a Qloo tag is found. If no direct bridge exists, it returns no recommendations and explains how to broaden the search.
+4. Returns up to 30 directory entries with a source link when Qloo provides a direct cultural bridge. If a named interest has no direct bridge but a selected activity theme does, it can show clearly labelled broader theme matches; it does not present them as personalized taste matches.
 5. Sends the user to the organiser's own page to confirm details or take the next step.
 
 Qloo is used for cultural connections and ranking. It does not verify event dates, availability, accessibility, or an organisation's current intake. Those details must be checked with the linked organiser. The application does not ask for or infer health, religion, identity, or a person's reason for seeking community.
@@ -36,9 +36,9 @@ The Qloo key is only used by server routes. Do not place it in browser code or c
 The hosted service exposes a Streamable HTTP MCP endpoint at `/api/mcp` (production: `https://bengaluru-solo-explorer.vercel.app/api/mcp`). An MCP-compatible agent can discover and call these tools:
 
 - `find_bengaluru_food_places`: query Qloo for cuisine-, dish-, and preference-matched Bengaluru food venues, with optional area and Qloo price tier.
-- `connect_taste_to_activities`: connect up to three cultural interests to checked Bengaluru community listings, with optional themes, area, cost, and joining-style filters. It returns only listings with a direct Qloo cultural bridge.
+- `connect_taste_to_activities`: connect up to three cultural interests to checked Bengaluru community listings, with optional themes, area, cost, and joining-style filters. Direct taste matches are preferred; any broader selected-theme matches are labelled separately.
 
-The endpoint supports the current `2026-07-28` MCP protocol and the previous initialize-based protocol revisions listed in `lib/mcp.js`. Qloo credentials remain server-side. The tools return an explicit empty result when Qloo does not establish a relevant match; they do not relabel directory fallback results as Qloo recommendations.
+The endpoint supports the current `2026-07-28` MCP protocol and the previous initialize-based protocol revisions listed in `lib/mcp.js`. Qloo credentials remain server-side. The tools return an explicit empty result when neither the taste nor selected Qloo theme establishes a relevant match; they do not relabel directory-only results as Qloo recommendations.
 
 ## Deploy on Vercel
 

@@ -164,6 +164,8 @@ function renderOptions(payload) {
   document.querySelector('#results-summary').textContent = options.length
     ? payload.matchMode === 'qloo'
       ? `${options.length} public ${options.length === 1 ? 'way' : 'ways'} to connect, ranked using Qloo’s cultural signals and filtered by the choices you made. We show only activities with a checked organiser source.`
+      : payload.matchMode === 'qloo-theme'
+        ? `${options.length} checked activities match the category signals Qloo returned. Your specific interest had no direct match, so these are broader ${safe([...document.querySelectorAll('input[name="themes"]:checked')].map(input => input.parentElement.textContent.trim()).join(', ') || 'category')} results.`
       : payload.message || `${options.length} source-checked activities match your filters.`
     : payload.message || 'There are no checked options matching this combination yet.';
   qlooSignalSummary(payload.signals);
@@ -225,7 +227,9 @@ form.addEventListener('submit', async event => {
     statusLine.textContent = result.options.length
       ? result.mode === 'places'
         ? `Qloo found ${result.options.length} Bengaluru places for your taste.`
-        : `Qloo connected your interests to ${result.options.length} checked activities.`
+        : result.matchMode === 'qloo-theme'
+          ? `Qloo found ${result.options.length} broader matches for the selected activity category. Your named interest did not match directly.`
+          : `Qloo connected your interests to ${result.options.length} checked activities.`
       : result.message;
     results.hidden = false;
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
