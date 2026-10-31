@@ -119,6 +119,26 @@ function safeUrl(value) {
   } catch { return ''; }
 }
 
+function currentDiscoveryTerms() {
+  const terms = selectedInterests();
+  if (terms.length) return terms.join(' ');
+  return [...document.querySelectorAll('input[name="themes"]:checked')]
+    .map(input => input.value === 'any' ? '' : input.parentElement.textContent.trim())
+    .filter(Boolean).join(' ');
+}
+
+function renderEmptyState(mode, message) {
+  const terms = currentDiscoveryTerms();
+  if (mode === 'places') {
+    const query = encodeURIComponent([terms || 'food places', document.querySelector('#start-area').value.trim(), 'Bengaluru'].filter(Boolean).join(' '));
+    return `<div class="discover-empty"><strong>No current Qloo place match found.</strong><span>${safe(message || 'Try a broader dish, cuisine, or nearby area.')}</span><div class="empty-actions"><a href="https://www.google.com/maps/search/?api=1&query=${query}" target="_blank" rel="noopener noreferrer">Search nearby places on Maps ↗</a><a href="https://www.google.com/search?q=${encodeURIComponent(`${terms || 'food'} Bengaluru places`)}" target="_blank" rel="noopener noreferrer">Search the web ↗</a></div></div>`;
+  }
+
+  const searchTerm = `${terms || 'events'} Bengaluru`;
+  const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchTerm)}`;
+  return `<div class="discover-empty"><strong>No current event match found in this genre.</strong><span>${safe(message || 'No checked listing matched this interest and all selected filters. Other events may still be available on live event platforms.')}</span><div class="empty-actions"><a href="https://in.bookmyshow.com/explore/events-bengaluru" target="_blank" rel="noopener noreferrer">Browse BookMyShow ↗</a><a href="https://www.district.in/events/upcoming-events-in-bengaluru" target="_blank" rel="noopener noreferrer">Browse District ↗</a><a href="https://allevents.in/bangalore/" target="_blank" rel="noopener noreferrer">Browse AllEvents ↗</a><a href="${searchUrl}" target="_blank" rel="noopener noreferrer">Search “${safe(searchTerm)}” ↗</a></div><small>Listings, dates, and ticket availability can change. Confirm with the event organizer before you go.</small></div>`;
+}
+
 function renderPlaces(payload) {
   const places = Array.isArray(payload.options) ? payload.options : [];
   document.querySelector('#result-count').textContent = `${places.length} ${places.length === 1 ? 'PLACE' : 'PLACES'}`;
@@ -128,7 +148,7 @@ function renderPlaces(payload) {
   qlooSignalSummary(payload.signals);
 
   if (!places.length) {
-    resultsGrid.innerHTML = `<div class="discover-empty"><strong>No close place matches yet.</strong><span>${safe(payload.message || 'Try another cuisine, dish, or neighbourhood.')}</span></div>`;
+    resultsGrid.innerHTML = renderEmptyState('places', payload.message);
     return;
   }
 
@@ -171,7 +191,7 @@ function renderOptions(payload) {
   qlooSignalSummary(payload.signals);
 
   if (!options.length) {
-    resultsGrid.innerHTML = `<div class="discover-empty"><strong>No clear match yet.</strong><span>${safe(payload.message || 'Try a different interest or widen one filter.')}</span></div>`;
+    resultsGrid.innerHTML = renderEmptyState('community', payload.message);
     return;
   }
 

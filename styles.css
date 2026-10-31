@@ -570,6 +570,10 @@ body[data-theme="light"] .agent-trace li span { background: #dceedd; color: #3d7
 .discovery-card-footer a:hover { text-decoration: underline; }
 .discover-empty { display: grid; gap: 5px; padding: 22px; border: 1px dashed #55705f; border-radius: 14px; color: var(--muted); }
 .discover-empty strong { color: var(--ink); }
+.discover-empty > small { color: var(--muted); font-size: 11px; line-height: 1.5; }
+.empty-actions { display: flex; flex-wrap: wrap; gap: 9px; margin: 10px 0; }
+.empty-actions a { display: inline-flex; align-items: center; padding: 9px 12px; border: 1px solid #779b814d; border-radius: 999px; background: #20392d; color: #c4e4ca; font-size: 12px; font-weight: 700; text-decoration: none; }
+.empty-actions a:hover, .empty-actions a:focus-visible { border-color: #8fbd97; background: #2b4b38; }
 body[data-theme="light"] .topbar { background: #f4f7f0eb; border-color: #d2ded4; }
 body[data-theme="light"] .discover-section, body[data-theme="light"] .discover-page { border-color: #d2ded4; }
 body[data-theme="light"] .discover-page { background: linear-gradient(180deg, #f3f8f0a8 0%, #f5f8f1ee 40%, #f4f7f1f5 100%), url('/bengaluru-city-scene.svg') center 42% / cover fixed, #f4f7f1; }
@@ -602,6 +606,8 @@ body[data-theme="light"] .discovery-card-footer { border-color: #d6e0d7; color: 
 body[data-theme="light"] .discovery-card-footer a { color: #9c5e42; }
 body[data-theme="light"] .discover-empty { border-color: #b6ccb8; }
 body[data-theme="light"] .discover-empty strong { color: #304738; }
+body[data-theme="light"] .empty-actions a { border-color: #c5d8c5; background: #edf5ec; color: #355e40; }
+body[data-theme="light"] .empty-actions a:hover, body[data-theme="light"] .empty-actions a:focus-visible { border-color: #7fa486; background: #e0eee0; }
 
 /* Taste-to-Belonging experience */
 .belonging-hero { padding-top: 58px; gap: 32px; }
